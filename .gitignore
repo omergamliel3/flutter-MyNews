@@ -80,3 +80,5 @@
 /Assets
 /build
 /lib/shared/keys.dart
+
+.flutter-plugins-dependencies

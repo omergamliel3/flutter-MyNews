@@ -18,6 +18,7 @@ class DBservice {
   static final AsyncMemoizer _memoizer = AsyncMemoizer();
   static List<Article> _savedArticles = [];
   static Database _db;
+  static bool initDB;
 
   // _savedArticles getter
   static List<Article> get savedArticles => _savedArticles;
@@ -25,7 +26,7 @@ class DBservice {
   /// Init DB, run only once
   static Future<bool> asyncInitDB() async {
     // Avoid this function to be called multiple times
-    bool initDB;
+
     await _memoizer.runOnce(() async {
       initDB = await _initDb();
       //return initDB;
@@ -47,12 +48,16 @@ class DBservice {
         dbPath,
         version: 1,
         onCreate: (Database db, int version) async {
+          // create saved articles table
           await _createSavedArticlesTable(db);
+          // create 2 headlines news tables
           await _createHeadlinesTable(db);
+          // create following news tables
           await _createFollowingTables(db);
         },
       );
-
+      // get saved articles from db
+      _savedArticles = await getArticles();
       return true;
     } catch (e) {
       // failed to init db
@@ -63,6 +68,7 @@ class DBservice {
 
   // execute saved articles db tables
   static Future<void> _createSavedArticlesTable(Database db) async {
+    //print('create $_kDbTableName table!');
     await db.execute('''
         CREATE TABLE $_kDbTableName(
           id INTEGER PRIMARY KEY, 
@@ -73,7 +79,6 @@ class DBservice {
           date TEXT,
           textDirection TEXT)
         ''');
-    _savedArticles = await getArticles();
   }
 
   // execute headlines db tables
@@ -85,6 +90,7 @@ class DBservice {
       } else {
         tableName = _kDBGlobalNewsTableName;
       }
+      //print('create $tableName table!');
       await db.execute('''
         CREATE TABLE $tableName(
           id INTEGER PRIMARY KEY, 
@@ -106,8 +112,9 @@ class DBservice {
   // execute following db tables
   static Future<void> _createFollowingTables(Database db) async {
     for (var i = 0; i < defaultsCategories.length; i++) {
+      //print('create followingNews$i table!');
       await db.execute('''
-        CREATE TABLE ${defaultsCategories[i]}(
+        CREATE TABLE followingNews$i(
           id INTEGER PRIMARY KEY, 
           author TEXT,
           source TEXT,
@@ -137,6 +144,7 @@ class DBservice {
   /// Retrieves rows from the db table.
   static Future<List<Article>> getArticles() async {
     List<Map> jsons = await _db.rawQuery('SELECT * FROM $_kDbTableName');
+    //print('${jsons.length} rows retrieved from db $_kDbTableName!');
     return jsons.map((json) => Article.fromJsonMap(json)).toList();
   }
 
@@ -231,41 +239,27 @@ class DBservice {
     return false;
   }
 
-  /// insert articles for debugging
-  static Future<void> insertDebugArticles() async {
-    int i = 0;
-    while (i < 3) {
-      final Article article = Article(
-          url:
-              'https://forge.medium.com/how-to-change-someones-mind-in-10-steps-e73d1f2d1e63$i',
-          urlToImage:
-              'https://miro.medium.com/max/1400/1*LyVe87joKmG2_Ml4yc-eGw.jpeg',
-          title: 'How to Change Someone’s Mind in 10 Steps',
-          source: 'Medium',
-          date: '2020-07-03T21:11:00Z',
-          textDirection: 'ltr');
-      await addArticle(article);
-      i++;
-    }
-  }
-
   /// insert temp news
-  static Future<bool> insertTempNews(News news, int index) async {
-    print('insert temp news');
+  static Future<bool> insertTempNews(News news, int index,
+      {bool following = false}) async {
     String tableName;
-    if (index == 0) {
-      tableName = _kDBLocalNewsTableName;
-    } else if (index == 1) {
-      tableName = _kDBGlobalNewsTableName;
+    if (following) {
+      tableName = 'followingNews$index';
+      print('insert following$index temp news');
     } else {
-      return false;
+      print('insert headlines$index temp news');
+      if (index == 0) {
+        tableName = _kDBLocalNewsTableName;
+      } else if (index == 1) {
+        tableName = _kDBGlobalNewsTableName;
+      }
     }
+
     try {
       // delete existing table
       await _db.rawDelete('''
         DELETE FROM $tableName
       ''');
-      //print(count);
       // insert new element to the table
       await _db.transaction(
         (Transaction txn) async {
@@ -286,8 +280,6 @@ class DBservice {
               "${news.textDir}",
               "${news.createdTime}"
             )''');
-          //print('Inserted News with id=$id.');
-          //print(news.createdTime);
         },
       );
       return true;
@@ -298,16 +290,22 @@ class DBservice {
   }
 
   /// Retrieves rows from the db table.
-  static Future<List<News>> getTempNews(int index) async {
+  static Future<List<News>> getTempNews(int index,
+      {bool following = false}) async {
     String tableName;
-    if (index == 0) {
-      tableName = _kDBLocalNewsTableName;
-    } else if (index == 1) {
-      tableName = _kDBGlobalNewsTableName;
+    if (following) {
+      tableName = 'followingNews$index';
+    } else {
+      if (index == 0) {
+        tableName = _kDBLocalNewsTableName;
+      } else if (index == 1) {
+        tableName = _kDBGlobalNewsTableName;
+      }
     }
+
     try {
       List<Map> jsons = await _db.rawQuery('SELECT * FROM $tableName');
-      print('${jsons.length} rows retrieved from db!');
+      //print('${jsons.length} rows retrieved from db $tableName!');
       return jsons.map((json) {
         return News.fromDBmap(json);
       }).toList();

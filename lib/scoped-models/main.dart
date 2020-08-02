@@ -424,13 +424,6 @@ class MainModel extends Model {
         return defaultsCategories[index];
       });
 
-      // for (var i = 0; i < navBarLength; i++) {
-      //   String buttonNavBar = '';
-      //   buttonNavBar = _sharedPreferences.getString('NavBar$i');
-      //   _followingTopicsList.add(buttonNavBar);
-      //   _newsList.add([]);
-      // }
-
       // set search date mode, _fromDate, _toDate
       String searchDateModePrefsStr =
           _sharedPreferences.getString(searchDateModePrefsKey);
@@ -509,6 +502,7 @@ class MainModel extends Model {
       bool forceFetch = false,
       String search,
       int index}) async {
+    print('fetchNews call');
     // connectivity check
     bool connectivity = await Connectivity.internetConnectivity();
     // headlines / topics page:
@@ -668,13 +662,18 @@ class MainModel extends Model {
 
       // insert fetchedNewsList to DB
       fetchedNewsList.forEach((element) async {
-        await DBservice.insertTempNews(element, index);
+        await DBservice.insertTempNews(element, index, following: false);
       });
     }
     // topics page case
     else {
       // set _newsList to the local list
       _newsList[index] = List.from(fetchedNewsList);
+
+      // insert fetchedNewsList to DB
+      fetchedNewsList.forEach((element) async {
+        await DBservice.insertTempNews(element, index, following: true);
+      });
     }
     // notify the scoped-model widgets that something has change
     notifyListeners();
@@ -876,10 +875,10 @@ class MainModel extends Model {
     }
   }
 
-  /// fetch news data from db at statup
-  Future<void> fetchDatafromDB([bool connectivity = false]) async {
+  /// fetch temp headlines news data from db at
+  Future<void> fetchHeadlinesData([bool connectivity = false]) async {
     for (var i = 0; i < 2; i++) {
-      // get temp saved localheadlinesNews fomr db
+      // get temp saved localheadlinesNews from db
       List<News> localheadlinesNews = await DBservice.getTempNews(i);
       // if localheadlinesNews contains data
       if (localheadlinesNews != null && localheadlinesNews.isNotEmpty) {
@@ -887,14 +886,32 @@ class MainModel extends Model {
         DateTime createdTime =
             DateTime.parse(localheadlinesNews[0].createdTime);
         Duration difference = DateTime.now().difference(createdTime);
-        // if difference is greater then 0.5/1 hour data is expired,
-        // else, fetch db saved data.
-        if (difference.inMinutes > 1) {
-          print('local headlines news expired!');
-        } else {
-          print('fetch news data from db!');
-          // set homePageListNews local news list to the saved db data.
+        // if connectivity is true or difference smaller than 1 hour
+        if (difference.inMinutes < 59 || connectivity) {
+          //print('fetch headlines news data from db!');
+          // set homePageListNews to the saved db data.
           _homePageListNews[i] = List.from(localheadlinesNews);
+        }
+      }
+    }
+  }
+
+  /// fetch temp following news data from db
+  Future<void> fetchFollowingData([bool connectivity = false]) async {
+    for (var i = 0; i < _followingTopicsList.length; i++) {
+      // get temp following news data from db
+      List<News> followingNews =
+          await DBservice.getTempNews(i, following: true);
+
+      if (followingNews != null && followingNews.isNotEmpty) {
+        // data expire time validation
+        DateTime createdTime = DateTime.parse(followingNews[0].createdTime);
+        Duration difference = DateTime.now().difference(createdTime);
+        // if connectivity is true or difference smaller than 1 hour
+        if (difference.inMinutes < 59 || connectivity) {
+          //print('fetch following news data from db!');
+          // set local following news list to [followingNews]
+          _newsList[i] = List.from(followingNews);
         }
       }
     }

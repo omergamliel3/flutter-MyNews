@@ -71,11 +71,16 @@ class _LoadingScreenState extends State<LoadingScreen>
   }
 
   /// This method calls the initializers and once they complete redirects to main page
-  Future runInitTasks() async {
+  Future runInitTasks({bool allowNoConnectivity = false}) async {
+    // init app data (prefs and local)
+    await widget._model.initAppData();
+
     // init notifications
     Notifications.initNotifications();
 
+    // delete db for debug
     //await DBservice.deleteDB();
+
     // init db
     bool initDB = await DBservice.asyncInitDB();
     // close the app if failed to init db
@@ -83,28 +88,29 @@ class _LoadingScreenState extends State<LoadingScreen>
       SystemNavigator.pop();
     }
 
-    // fetch temp data from db
-    await widget._model.fetchDatafromDB();
-
     // checks for internet connectivity
     bool connectivity = await Connectivity.internetConnectivity();
     // if connectivity is false show dialog and stops the function
-    if (!connectivity) {
-      _handleNoConnectivity();
-      return;
+    if (!allowNoConnectivity) {
+      if (!connectivity) {
+        _handleNoConnectivity();
+        return;
+      }
     }
+
+    // fetch temp news data from db
+    await widget._model.fetchHeadlinesData(connectivity);
+    await widget._model.fetchFollowingData(connectivity);
 
     // get device location / last location
     bool location = await widget._model.fetchLocation();
-
+    // handle no location
     if (!location) {
       _handleNoLocation();
       return;
     }
-    // app data (prefs and local)
-    await widget._model.initAppData();
 
-    // init firebase admob utility
+    // init admob serivce
     //AdMobHelper.initialiseAdMob();
 
     Navigator.of(context).pushReplacementNamed('/main');
@@ -124,6 +130,12 @@ class _LoadingScreenState extends State<LoadingScreen>
       // if connectivity is true cancel timer and call runInitTasks
       if (connectivity) {
         runInitTasks();
+        timer.cancel();
+      }
+
+      if (timer.tick > 5) {
+        // launch app with no internet
+        runInitTasks(allowNoConnectivity: true);
         timer.cancel();
       }
     });
