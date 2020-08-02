@@ -3,18 +3,10 @@ import 'dart:math';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:admob_flutter/admob_flutter.dart' as admob_flutter;
 
+import 'package:MyNews/shared/keys.dart';
+
 // Admob Helper class
 class AdMobHelper {
-  // admob app id
-  static const String appId = 'ca-app-pub-5868916330908541~1053435177';
-
-  // native ad id
-  static const String nativeAdID = 'ca-app-pub-5868916330908541/9530351684';
-  // banner ad id
-  static const String bannerAdID = 'ca-app-pub-5868916330908541/9465104203';
-  // interstitial ad id
-  static const String interstitialAdID =
-      'ca-app-pub-5868916330908541/7399012360';
   // mobile ad targeting information
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     keywords: <String>[
