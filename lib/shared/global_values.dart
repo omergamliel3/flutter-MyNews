@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 String appName = 'MyNews';
 String appVersion = '1.0';
-String newsApiKey = 'a7e670365d50454a9d746ae81fbbae29';
-String geoCodingApiKey = 'AIzaSyBIlb9i7t7RlFSqIMGLrMSWAZjxgS8sKRY';
+
 String linkedinUrl =
     'https://www.linkedin.com/in/%D7%A2%D7%95%D7%9E%D7%A8-%D7%92%D7%9E%D7%9C%D7%99%D7%90%D7%9C-6a813a188';
 
