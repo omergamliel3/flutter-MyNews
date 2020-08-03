@@ -24,7 +24,7 @@ class _AddCategorieDialogState extends State<AddCategorieDialog> {
   // submit method, called when onPressed 'OK' Button
   void _submit() {
     widget.model
-        .addCategories(savedValue.trim(), widget.addLocalCategorie)
+        .addFollowing(savedValue.trim(), widget.addLocalCategorie)
         .then((_) {
       showSnackBar(savedValue);
     });

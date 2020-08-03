@@ -20,13 +20,13 @@ class RemoveDialog extends StatelessWidget {
       @required this.index});
 
   // submit method
-  void submit(BuildContext context) {
+  void submit(BuildContext context) async {
     // if the current removed categorie is the last index page set the pageIndex
     if (model.getfollowingTopicsList.length - 1 == model.tabBarIndex) {
       model.setTabBarIndex(model.tabBarIndex - 1);
     }
     // call remvoe categorie from MainModel
-    model.removeCategories(index);
+    await model.removeFollowing(index);
     // remove FocusNode
     removeLocal();
     // show snackbar

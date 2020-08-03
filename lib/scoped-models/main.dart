@@ -27,7 +27,6 @@ class MainModel extends Model {
   SharedPreferences get sharedPreferences => _sharedPreferences;
   Future<void> initSharedPrefrences() async {
     _sharedPreferences = await SharedPreferences.getInstance();
-
     //_sharedPreferences.clear();
   }
 
@@ -101,6 +100,7 @@ class MainModel extends Model {
       _sharedPreferences.remove('lastLocation');
     }
     _sharedPreferences.setBool('disableLocation', _disableLocation);
+
     notifyListeners();
   }
 
@@ -138,16 +138,20 @@ class MainModel extends Model {
 
   /// set buttons nav bar method
   void setButtonNavBar(int index, String str) async {
+    // drop exising following table
+    await DBservice.dropTable(_followingTopicsList[index]);
+    // create new table with the updated following topic
+    await DBservice.createFollowingTable(str);
+
     // set the buttonNavBar according to the given index
     int listIndex = index;
     // set the navBar at index of _followingTopicsList
     _followingTopicsList[listIndex] = str;
     // set the news list object at index of _newsList to empty
     _newsList[listIndex] = [];
-    // if current page index equals to current change NavBar, call fetchNews method, and update searchMode
 
-    // set navBar IconData list
-    //setnavBarIconDataList(index);
+    // if current page index equals to current change NavBar,
+    // call fetchNews method, and update searchMode
 
     if (_tabBarIndex == index) {
       fetchNews(
@@ -419,9 +423,8 @@ class MainModel extends Model {
       _followingTopicsList = List<String>.generate(navBarLength, (index) {
         String buttonNavBar =
             _sharedPreferences.getString('NavBar$index') ?? '';
-        _followingTopicsList.add(buttonNavBar);
         _newsList.add([]);
-        return defaultsCategories[index];
+        return buttonNavBar;
       });
 
       // set search date mode, _fromDate, _toDate
@@ -662,7 +665,7 @@ class MainModel extends Model {
 
       // insert fetchedNewsList to DB
       fetchedNewsList.forEach((element) async {
-        await DBservice.insertTempNews(element, index, following: false);
+        await DBservice.insertTempNews(element, index);
       });
     }
     // topics page case
@@ -672,7 +675,7 @@ class MainModel extends Model {
 
       // insert fetchedNewsList to DB
       fetchedNewsList.forEach((element) async {
-        await DBservice.insertTempNews(element, index, following: true);
+        await DBservice.insertTempNews(element, index, following: search);
       });
     }
     // notify the scoped-model widgets that something has change
@@ -682,48 +685,44 @@ class MainModel extends Model {
   }
 
   /// add categories method
-  Future<void> addCategories(String categorie, Function addLocal) async {
+  Future<void> addFollowing(String followingTopic, Function addLocal) async {
     // call add local function
-    addLocal(categorie);
+    addLocal(followingTopic);
     // trim and lower case string
-    String addValue = categorie.trim().toLowerCase();
+    String addValue = followingTopic.trim().toLowerCase();
     // uppder case first char
     addValue = addValue.upperCaseFirstChar();
     _sharedPreferences.setString(
-        'NavBar${_followingTopicsList.length}', categorie);
-    _followingTopicsList.add(categorie);
+        'NavBar${_followingTopicsList.length}', followingTopic);
+    _followingTopicsList.add(followingTopic);
     _newsList.add([]);
     _sharedPreferences.setInt('NavBarLength', _followingTopicsList.length);
+    await DBservice.createFollowingTable(followingTopic);
     notifyListeners();
   }
 
   /// remove categories method
-  void removeCategories(int index) async {
+  Future<void> removeFollowing(int index) async {
     // remove from prefs
     _sharedPreferences.remove('NavBar$index');
     // remove from navBarList at index
-    _followingTopicsList.removeAt(index);
+    String removed = _followingTopicsList.removeAt(index);
     // remove from newsList at index
     _newsList.removeAt(index);
-    // remove from navBarIconData list at index
-    //_navBarIconDataList.removeAt(index);
     // set new NavBarLength in prefs
     _sharedPreferences.setInt('NavBarLength', _followingTopicsList.length);
     // save all NavBar + index with the updated values
     for (var i = 0; i < _followingTopicsList.length; i++) {
       _sharedPreferences.setString('NavBar$i', _followingTopicsList[i]);
     }
+    // drop removed following topic db table
+    await DBservice.dropTable(removed);
     // notify model has changed
     notifyListeners();
   }
 
   /// get user location and fetch country name from google geocode API
   Future<bool> fetchLocation({bool refetch = false}) async {
-    // set method timeout
-    // Future.delayed(Duration(seconds: 15), () {
-    //   return false;
-    // });
-
     if (sharedPreferences.getBool('disableLocation') ?? false) {
       _searchCountry = null;
       return true;
@@ -739,6 +738,12 @@ class MainModel extends Model {
         checkSupportedCountry(_searchCountry);
         return true;
       }
+    }
+
+    if (refetch) {
+      // clear local headlines db table
+      const String _kDBLocalNewsTableName = 'local_news_table';
+      await DBservice.clearTable(_kDBLocalNewsTableName);
     }
 
     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
@@ -901,7 +906,7 @@ class MainModel extends Model {
     for (var i = 0; i < _followingTopicsList.length; i++) {
       // get temp following news data from db
       List<News> followingNews =
-          await DBservice.getTempNews(i, following: true);
+          await DBservice.getTempNews(i, following: _followingTopicsList[i]);
 
       if (followingNews != null && followingNews.isNotEmpty) {
         // data expire time validation

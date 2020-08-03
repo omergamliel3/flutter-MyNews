@@ -26,7 +26,6 @@ class DBservice {
   /// Init DB, run only once
   static Future<bool> asyncInitDB() async {
     // Avoid this function to be called multiple times
-
     await _memoizer.runOnce(() async {
       initDB = await _initDb();
       //return initDB;
@@ -66,6 +65,16 @@ class DBservice {
     }
   }
 
+  /// Delete the database
+  static Future<void> deleteDB() async {
+    final dbFolder = await getDatabasesPath();
+    if (!await Directory(dbFolder).exists()) {
+      await Directory(dbFolder).create(recursive: true);
+    }
+    final dbPath = join(dbFolder, _kDbFileName);
+    await deleteDatabase(dbPath);
+  }
+
   // execute saved articles db tables
   static Future<void> _createSavedArticlesTable(Database db) async {
     //print('create $_kDbTableName table!');
@@ -81,7 +90,7 @@ class DBservice {
         ''');
   }
 
-  // execute headlines db tables
+  /// execute headlines db tables
   static Future<void> _createHeadlinesTable(Database db) async {
     for (var i = 0; i < 2; i++) {
       String tableName;
@@ -109,12 +118,13 @@ class DBservice {
     }
   }
 
-  // execute following db tables
+  /// execute following db tables
   static Future<void> _createFollowingTables(Database db) async {
     for (var i = 0; i < defaultsCategories.length; i++) {
-      //print('create followingNews$i table!');
+      String following = defaultsCategories[i];
+      print('create $following table!');
       await db.execute('''
-        CREATE TABLE followingNews$i(
+        CREATE TABLE $following(
           id INTEGER PRIMARY KEY, 
           author TEXT,
           source TEXT,
@@ -131,14 +141,36 @@ class DBservice {
     }
   }
 
-  /// Delete the database
-  static Future<void> deleteDB() async {
-    final dbFolder = await getDatabasesPath();
-    if (!await Directory(dbFolder).exists()) {
-      await Directory(dbFolder).create(recursive: true);
-    }
-    final dbPath = join(dbFolder, _kDbFileName);
-    await deleteDatabase(dbPath);
+  /// execute following table with a given index
+  static Future<void> createFollowingTable(String following) async {
+    print('create $following table!');
+    await _db.execute('''
+        CREATE TABLE $following(
+          id INTEGER PRIMARY KEY, 
+          author TEXT,
+          source TEXT,
+          title TEXT,
+          description TEXT,
+          content TEXT,
+          url TEXT,
+          urlToImage TEXT,
+          publishedAt TEXT,
+          textDir TEXT,
+          createTime TEXT
+          )
+        ''');
+  }
+
+  /// drop table from db
+  static Future<void> dropTable(String following) async {
+    print('drop $following table!');
+    await _db.execute("DROP TABLE IF EXISTS $following");
+  }
+
+  /// clear following index table
+  static Future<void> clearTable(String table) async {
+    print('clear $table table!');
+    await _db.rawDelete('''DELETE FROM $table''');
   }
 
   /// Retrieves rows from the db table.
@@ -241,12 +273,15 @@ class DBservice {
 
   /// insert temp news
   static Future<bool> insertTempNews(News news, int index,
-      {bool following = false}) async {
+      {String following}) async {
     String tableName;
-    if (following) {
-      tableName = 'followingNews$index';
-      print('insert following$index temp news');
-    } else {
+    // following insert
+    if (following != null) {
+      tableName = following;
+      print('insert $following temp news');
+    }
+    // headlines insert
+    else {
       print('insert headlines$index temp news');
       if (index == 0) {
         tableName = _kDBLocalNewsTableName;
@@ -290,11 +325,10 @@ class DBservice {
   }
 
   /// Retrieves rows from the db table.
-  static Future<List<News>> getTempNews(int index,
-      {bool following = false}) async {
+  static Future<List<News>> getTempNews(int index, {String following}) async {
     String tableName;
-    if (following) {
-      tableName = 'followingNews$index';
+    if (following != null) {
+      tableName = following;
     } else {
       if (index == 0) {
         tableName = _kDBLocalNewsTableName;
