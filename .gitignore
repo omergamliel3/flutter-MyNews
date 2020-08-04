@@ -81,4 +81,4 @@
 /build
 /lib/shared/keys.dart
 
-.flutter-plugins-dependencies
+*.flutter-plugins-dependencies

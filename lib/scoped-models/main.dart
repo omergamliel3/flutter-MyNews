@@ -412,6 +412,7 @@ class MainModel extends Model {
 
       // disable location default is false;
       _disableLocation = false;
+      sharedPreferences.setBool('disableLocation', false);
     }
     // not first time open the app, get user data from prefs
     else {
@@ -472,12 +473,10 @@ class MainModel extends Model {
   }
 
   /// restore all saved prefs and local to defaults
-  Future<bool> restoreToDefaults() async {
+  Future<void> restoreToDefaults() async {
     // clear prefs
     String location = _sharedPreferences.get('lastLocation');
-    _sharedPreferences.clear().catchError((_) {
-      return false;
-    });
+    await _sharedPreferences.clear();
     // set last location to evoid alert when entering the app again with locatio service disalbe
     _sharedPreferences.setString('lastLocation', location);
     // evoid showing dialogs again
@@ -493,9 +492,9 @@ class MainModel extends Model {
     _newsList.clear();
     _followingTopicsList.clear();
     setSearchDateMode(SearchDateMode.Default);
-    await DBservice.deleteAllArticles();
+    await DBservice.deleteDB();
+    await DBservice.initDb();
     notifyListeners();
-    return true;
   }
 
   /// fetch news from 'News API'

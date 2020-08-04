@@ -27,14 +27,14 @@ class DBservice {
   static Future<bool> asyncInitDB() async {
     // Avoid this function to be called multiple times
     await _memoizer.runOnce(() async {
-      initDB = await _initDb();
+      initDB = await initDb();
       //return initDB;
     });
     return initDB;
   }
 
   // Opens a db local file. Creates the db table if it's not yet created.
-  static Future<bool> _initDb() async {
+  static Future<bool> initDb() async {
     try {
       // get database path directory
       final dbFolder = await getDatabasesPath();
@@ -73,6 +73,9 @@ class DBservice {
     }
     final dbPath = join(dbFolder, _kDbFileName);
     await deleteDatabase(dbPath);
+    _db = null;
+    initDB = null;
+    _savedArticles.clear();
   }
 
   // execute saved articles db tables

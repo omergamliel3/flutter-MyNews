@@ -27,7 +27,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     with TickerProviderStateMixin {
   AnimationController _logoAnimationController;
   Animation _logoAnimation;
-  bool _isDialogOpen = false;
+  //bool _isDialogOpen = false;
 
   @override
   void initState() {
@@ -71,12 +71,33 @@ class _LoadingScreenState extends State<LoadingScreen>
   }
 
   /// This method calls the initializers and once they complete redirects to main page
-  Future runInitTasks({bool allowNoConnectivity = false}) async {
-    // init app data (prefs and local)
-    await widget._model.initAppData();
+  Future runInitTasks(
+      {bool allowNoConnectivity = false, bool skipLocation = false}) async {
+    // checks for internet connectivity
+    bool connectivity = await Connectivity.internetConnectivity();
+    // if connectivity is false show dialog and stops the function
+    if (!allowNoConnectivity) {
+      if (!connectivity) {
+        _handleNoConnectivity();
+        return;
+      }
+    }
+
+    if (!skipLocation) {
+      // get device location / last location
+      bool location = await widget._model.fetchLocation();
+      // handle no location
+      if (!location) {
+        _handleNoLocation();
+        return;
+      }
+    }
 
     // init notifications
     Notifications.initNotifications();
+
+    // init app data (prefs and local)
+    await widget._model.initAppData();
 
     // delete db for debug
     //await DBservice.deleteDB();
@@ -88,27 +109,9 @@ class _LoadingScreenState extends State<LoadingScreen>
       SystemNavigator.pop();
     }
 
-    // checks for internet connectivity
-    bool connectivity = await Connectivity.internetConnectivity();
-    // if connectivity is false show dialog and stops the function
-    if (!allowNoConnectivity) {
-      if (!connectivity) {
-        _handleNoConnectivity();
-        return;
-      }
-    }
-
     // fetch temp news data from db
     await widget._model.fetchHeadlinesData(connectivity);
     await widget._model.fetchFollowingData(connectivity);
-
-    // get device location / last location
-    bool location = await widget._model.fetchLocation();
-    // handle no location
-    if (!location) {
-      _handleNoLocation();
-      return;
-    }
 
     // init admob serivce
     //AdMobHelper.initialiseAdMob();
@@ -126,6 +129,7 @@ class _LoadingScreenState extends State<LoadingScreen>
 
     // Invoke internetConnectivity method every 1 second
     Timer.periodic(Duration(seconds: 1), (timer) async {
+      print(timer.tick);
       bool connectivity = await Connectivity.internetConnectivity();
       // if connectivity is true cancel timer and call runInitTasks
       if (connectivity) {
@@ -134,37 +138,48 @@ class _LoadingScreenState extends State<LoadingScreen>
       }
 
       if (timer.tick > 5) {
-        // launch app with no internet
-        runInitTasks(allowNoConnectivity: true);
-        timer.cancel();
+        // allow launch only if disableLocation value true or lastLocation is saved
+        bool locationDisable =
+            widget._model.sharedPreferences.getBool('disableLocation') ?? false;
+        bool locationSaved =
+            widget._model.sharedPreferences.getString('lastLocation') != null;
+        if (locationDisable || locationSaved) {
+          // launch app with no internet
+          runInitTasks(allowNoConnectivity: true);
+          timer.cancel();
+        }
       }
     });
   }
 
   // handle no locatiom dialog
-  void _handleNoLocation() {
+  void _handleNoLocation() async {
+    // show enable location toast
     Fluttertoast.showToast(
       msg: 'Please enable location service',
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
     );
 
-    // Invoke internetConnectivity method every 1 second
-    Timer.periodic(Duration(seconds: 1), (timer) async {
-      bool location = await widget._model.fetchLocation();
-      // if location is true cancel timer and call runInitTasks
-      if (location) {
-        runInitTasks();
-        timer.cancel();
-      } else {
-        if (!_isDialogOpen) {
-          if (timer.tick > 5) {
-            _isDialogOpen = true;
-            showNoLocationDialog();
-          }
-        }
+    bool location = false;
+    bool dialogOpen = false;
+    int timer = 0;
+    while (!location) {
+      await Future.delayed(Duration(seconds: 1));
+      timer++;
+
+      if (timer > 8 && !dialogOpen) {
+        dialogOpen = true;
+        showNoLocationDialog();
       }
-    });
+      location = await widget._model.fetchLocation();
+    }
+    // pop from dialog if open
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    // run Init Tasks with skip location
+    runInitTasks(skipLocation: true);
   }
 
   // show no location dialog
@@ -256,3 +271,20 @@ class _LoadingScreenState extends State<LoadingScreen>
     );
   }
 }
+
+// Invoke internetConnectivity method every 1 second
+// Timer.periodic(Duration(seconds: 1), (timer) async {
+//   bool location = await widget._model.fetchLocation();
+//   // if location is true cancel timer and call runInitTasks
+//   if (location) {
+//     runInitTasks();
+//     timer.cancel();
+//   } else {
+//     if (!_isDialogOpen) {
+//       if (timer.tick > 5) {
+//         _isDialogOpen = true;
+//         showNoLocationDialog();
+//       }
+//     }
+//   }
+// });

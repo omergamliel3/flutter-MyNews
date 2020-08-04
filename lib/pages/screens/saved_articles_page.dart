@@ -172,9 +172,12 @@ class _SavedArticlesPage extends State<SavedArticlesPage>
     List<Article> articles = await DBservice.getArticles();
     if (_listkey.currentState != null)
       _listkey.currentState.insertItem(articles.length - 1);
-    await Future.delayed(Duration(seconds: 1), () {
-      //widget.model.callNotifyListeners();
-    });
+
+    // insert item from empty list
+    // call setState to notify UI change
+    if (articles.length == 1) {
+      setState(() {});
+    }
   }
 
   @override

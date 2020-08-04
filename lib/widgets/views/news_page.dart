@@ -130,17 +130,15 @@ class _NewsPageState extends State<NewsPage> {
       if (newsList.isEmpty) {
         return _buildLoadingWidget();
       } else {
-        return RefreshIndicator(
-            child: ListView.builder(
-              addAutomaticKeepAlives: true,
-              physics: ScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: 5.0),
-              itemBuilder: (context, index) {
-                return NewsCard(newsList[index], widget.model, index);
-              },
-              itemCount: newsList.length,
-            ),
-            onRefresh: _onRefresh);
+        return ListView.builder(
+          addAutomaticKeepAlives: true,
+          physics: ScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 5.0),
+          itemBuilder: (context, index) {
+            return NewsCard(newsList[index], widget.model, index);
+          },
+          itemCount: newsList.length,
+        );
       }
     });
   }
@@ -171,8 +169,10 @@ class _NewsPageState extends State<NewsPage> {
       bool connectivity = await Connectivity.internetConnectivity();
       // if connectivity is true call fetchNews and cancel timer
       if (connectivity) {
-        fetchNews(forceFetch: true);
+        print('connectivity!!!!!!!');
         timer.cancel();
+        await fetchNews(forceFetch: true);
+        if (mounted) setState(() {});
       }
     });
   }
@@ -191,20 +191,6 @@ class _NewsPageState extends State<NewsPage> {
     }
   }
 
-  // onRefresh indicatpr callback
-  Future<void> _onRefresh() async {
-    Map<String, dynamic> info = await fetchNews(forceFetch: true);
-    if (info['message'] == 'There is no internet connection') {
-      //  show no connection Toast
-      Fluttertoast.showToast(
-        msg: 'There is no internet connection',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
-    }
-    return Future.value(true);
-  }
-
   @override
   Widget build(BuildContext context) {
     // prevent re-build futureBuilder again when already fetched
@@ -218,6 +204,7 @@ class _NewsPageState extends State<NewsPage> {
       newsList = widget.model.getNewsList[widget.index];
     }
     if (newsList.isNotEmpty) {
+      print('_buildNewsCardListView');
       handlePageReturn();
       return _buildNewsCardListView();
     } else
@@ -252,3 +239,16 @@ class _NewsPageState extends State<NewsPage> {
 
 //   // return BannerAdWidget();
 // },
+// onRefresh indicatpr callback
+// Future<void> _onRefresh() async {
+//   Map<String, dynamic> info = await fetchNews(forceFetch: true);
+//   if (info['message'] == 'There is no internet connection') {
+//     //  show no connection Toast
+//     Fluttertoast.showToast(
+//       msg: 'There is no internet connection',
+//       toastLength: Toast.LENGTH_LONG,
+//       gravity: ToastGravity.BOTTOM,
+//     );
+//   }
+//   return Future.value(true);
+// }
