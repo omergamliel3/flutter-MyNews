@@ -1,3 +1,5 @@
+.flutter-plugins-dependencies
+
 # Miscellaneous
 *.class
 *.log
@@ -81,4 +83,4 @@
 /build
 /lib/shared/keys.dart
 
-*.flutter-plugins-dependencies
+
