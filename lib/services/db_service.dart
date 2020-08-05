@@ -80,7 +80,6 @@ class DBservice {
 
   // execute saved articles db tables
   static Future<void> _createSavedArticlesTable(Database db) async {
-    //print('create $_kDbTableName table!');
     await db.execute('''
         CREATE TABLE $_kDbTableName(
           id INTEGER PRIMARY KEY, 
@@ -102,7 +101,6 @@ class DBservice {
       } else {
         tableName = _kDBGlobalNewsTableName;
       }
-      //print('create $tableName table!');
       await db.execute('''
         CREATE TABLE $tableName(
           id INTEGER PRIMARY KEY, 
@@ -125,7 +123,6 @@ class DBservice {
   static Future<void> _createFollowingTables(Database db) async {
     for (var i = 0; i < defaultsCategories.length; i++) {
       String following = defaultsCategories[i];
-      print('create $following table!');
       await db.execute('''
         CREATE TABLE $following(
           id INTEGER PRIMARY KEY, 
@@ -146,7 +143,6 @@ class DBservice {
 
   /// execute following table with a given index
   static Future<void> createFollowingTable(String following) async {
-    print('create $following table!');
     await _db.execute('''
         CREATE TABLE $following(
           id INTEGER PRIMARY KEY, 
@@ -166,20 +162,17 @@ class DBservice {
 
   /// drop table from db
   static Future<void> dropTable(String following) async {
-    print('drop $following table!');
     await _db.execute("DROP TABLE IF EXISTS $following");
   }
 
   /// clear following index table
   static Future<void> clearTable(String table) async {
-    print('clear $table table!');
     await _db.rawDelete('''DELETE FROM $table''');
   }
 
   /// Retrieves rows from the db table.
   static Future<List<Article>> getArticles() async {
     List<Map> jsons = await _db.rawQuery('SELECT * FROM $_kDbTableName');
-    //print('${jsons.length} rows retrieved from db $_kDbTableName!');
     return jsons.map((json) => Article.fromJsonMap(json)).toList();
   }
 
@@ -205,7 +198,7 @@ class DBservice {
     try {
       await _db.transaction(
         (Transaction txn) async {
-          int id = await txn.rawInsert('''
+          await txn.rawInsert('''
           INSERT INTO $_kDbTableName
             (url, urlToImage, title, source, date, textDirection)
           VALUES
@@ -218,7 +211,6 @@ class DBservice {
               "${article.textDirection}"
             )''');
           _savedArticles.add(article);
-          print('Inserted Article with id=$id.');
         },
       );
       return true;
@@ -231,14 +223,12 @@ class DBservice {
   /// Deletes records in the db table.
   /// return [true/false] if successfuly deleted article from the table
   static Future<bool> deleteArticle(String url) async {
-    print('deleteArticle');
     try {
-      final count = await _db.rawDelete('''
+      await _db.rawDelete('''
         DELETE FROM $_kDbTableName
         WHERE url = "$url"
       ''');
       _savedArticles.removeWhere((element) => element.url == url);
-      print('Updated $count records in db.');
       return true;
     } catch (e) {
       print(e);
@@ -250,13 +240,12 @@ class DBservice {
   /// return [true/false] if successfuly updated article
   static Future<bool> updateArticle(Article article) async {
     try {
-      int count = await _db.rawUpdate(
+      await _db.rawUpdate(
         /*sql=*/ '''UPDATE $_kDbTableName
                     SET source = ?
                     WHERE id = ?''',
         /*args=*/ ['O.G MOBILE DEV', article.id],
       );
-      print('Updated $count records in db.');
       return true;
     } catch (e) {
       print(e);
@@ -281,11 +270,9 @@ class DBservice {
     // following insert
     if (following != null) {
       tableName = following;
-      print('insert $following temp news');
     }
     // headlines insert
     else {
-      print('insert headlines$index temp news');
       if (index == 0) {
         tableName = _kDBLocalNewsTableName;
       } else if (index == 1) {
@@ -342,7 +329,6 @@ class DBservice {
 
     try {
       List<Map> jsons = await _db.rawQuery('SELECT * FROM $tableName');
-      //print('${jsons.length} rows retrieved from db $tableName!');
       return jsons.map((json) {
         return News.fromDBmap(json);
       }).toList();

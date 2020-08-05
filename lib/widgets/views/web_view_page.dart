@@ -51,6 +51,7 @@ class _WebViewPageState extends State<WebViewPage> {
         url: widget.url,
         displayZoomControls: true,
         geolocationEnabled: true,
+        withJavascript: true,
         withZoom: true,
       ),
     );

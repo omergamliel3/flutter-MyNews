@@ -73,15 +73,11 @@ class _NewsPageState extends State<NewsPage> {
 
   // // build Error widget method
   Widget _buildErrorWidget(String error) {
-    String displayErrorText = error;
-    if (error == 'Can\'t find articles') {
-      displayErrorText += '\n\nOnly English search is valid.';
-    }
     return Container(
       alignment: Alignment.topCenter,
       padding: EdgeInsets.all(15.0),
       child: Text(
-        displayErrorText,
+        error,
         style: Theme.of(context).textTheme.headline6,
       ),
     );
@@ -169,7 +165,6 @@ class _NewsPageState extends State<NewsPage> {
       bool connectivity = await Connectivity.internetConnectivity();
       // if connectivity is true call fetchNews and cancel timer
       if (connectivity) {
-        print('connectivity!!!!!!!');
         timer.cancel();
         await fetchNews(forceFetch: true);
         if (mounted) setState(() {});
@@ -204,7 +199,6 @@ class _NewsPageState extends State<NewsPage> {
       newsList = widget.model.getNewsList[widget.index];
     }
     if (newsList.isNotEmpty) {
-      print('_buildNewsCardListView');
       handlePageReturn();
       return _buildNewsCardListView();
     } else

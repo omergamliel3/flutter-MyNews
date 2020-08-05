@@ -310,7 +310,6 @@ class _NewsCardState extends State<NewsCard>
       );
       MailHelper.sentIssue(screenshotPath: imgFile.path);
     } catch (e) {
-      print('Failed to save screenshots to $directory');
       print(e);
     }
   }

@@ -27,7 +27,6 @@ class MainModel extends Model {
   SharedPreferences get sharedPreferences => _sharedPreferences;
   Future<void> initSharedPrefrences() async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    //_sharedPreferences.clear();
   }
 
   // access model with ScopedModel.of(context)
@@ -504,7 +503,6 @@ class MainModel extends Model {
       bool forceFetch = false,
       String search,
       int index}) async {
-    print('fetchNews call');
     // connectivity check
     bool connectivity = await Connectivity.internetConnectivity();
     // headlines / topics page:
@@ -520,7 +518,6 @@ class MainModel extends Model {
         newsList = _newsList[index];
 
       if (newsList.isNotEmpty) {
-        print('newsList is not empty');
         notifyListeners();
         return connectivity
             ? {'error': false}

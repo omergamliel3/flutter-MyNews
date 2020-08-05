@@ -26,6 +26,7 @@ class DeleteSearchWidget extends StatelessWidget {
                   style: TextStyle(color: Theme.of(context).accentColor),
                 ),
                 onPressed: () {
+                  // pop from the dialog
                   Navigator.of(context).pop();
                 },
               ),
@@ -37,9 +38,11 @@ class DeleteSearchWidget extends StatelessWidget {
                 ),
                 onPressed: () {
                   // clear suggestion from prefs
-                  MainModel.of(context).sharedPreferences.remove('prefsKey');
-                  // set saved search news title to empty string (remove last search there is one)
+                  MainModel.of(context).sharedPreferences.remove(prefsKey);
+                  // remove last search
                   MainModel.of(context).setSavedSearchNewsTitle('');
+                  // pop from the dialog
+                  Navigator.of(context).pop();
                 },
               ),
             ],

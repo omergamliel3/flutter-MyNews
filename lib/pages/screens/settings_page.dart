@@ -301,16 +301,10 @@ class _SettingsPageState extends State<SettingsPage>
 
   // delete saved search string from shared preferences
   void _deletePrefs() async {
-    // restore settings to defaults
-
-    // clear _formFieldfocusNodeList
+    // reset locally
     _formFieldfocusNodeList.clear();
     _textEditingControllerList.clear();
     _expandedList.clear();
-    await widget.model.restoreToDefaults();
-    // Set NavBars
-    await widget.model.initAppData();
-    //widget.model.initnavBarIconDataList();
     int length = widget.model.getfollowingTopicsList.length;
     // generate _formFieldfocusNodeList
     _formFieldfocusNodeList = List.generate(length, (index) {
@@ -326,8 +320,12 @@ class _SettingsPageState extends State<SettingsPage>
       _textEditingControllerList[i].text =
           widget.model.getfollowingTopicsList[i];
     }
+    // reset main model
+    await widget.model.restoreToDefaults();
+    await widget.model.initAppData();
+    // setState the app
     widget.changeState();
-
+    // pop from dialog
     Navigator.of(context).pop();
   }
 
@@ -403,7 +401,7 @@ class _SettingsPageState extends State<SettingsPage>
                 // Restore card
                 SettingsText('Restore'),
                 _buildSettingsCard([RestoreDefaultsListTile(_deletePrefs)]),
-                SettingsText('Theme'),
+                SettingsText('Customize'),
                 _buildSettingsCard([
                   // Accent Color Picker
                   ColorPicker(widget.model, widget.changeState),

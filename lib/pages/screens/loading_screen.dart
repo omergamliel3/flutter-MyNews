@@ -129,7 +129,6 @@ class _LoadingScreenState extends State<LoadingScreen>
 
     // Invoke internetConnectivity method every 1 second
     Timer.periodic(Duration(seconds: 1), (timer) async {
-      print(timer.tick);
       bool connectivity = await Connectivity.internetConnectivity();
       // if connectivity is true cancel timer and call runInitTasks
       if (connectivity) {
@@ -271,20 +270,3 @@ class _LoadingScreenState extends State<LoadingScreen>
     );
   }
 }
-
-// Invoke internetConnectivity method every 1 second
-// Timer.periodic(Duration(seconds: 1), (timer) async {
-//   bool location = await widget._model.fetchLocation();
-//   // if location is true cancel timer and call runInitTasks
-//   if (location) {
-//     runInitTasks();
-//     timer.cancel();
-//   } else {
-//     if (!_isDialogOpen) {
-//       if (timer.tick > 5) {
-//         _isDialogOpen = true;
-//         showNoLocationDialog();
-//       }
-//     }
-//   }
-// });
