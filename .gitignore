@@ -37,8 +37,6 @@
 **/android/gradlew.bat
 **/android/local.properties
 **/android/key.properties
-**/android/app/google-services.json
-**/android/app/key.jks
 **/android/**/GeneratedPluginRegistrant.java
 
 # iOS/XCode related
@@ -82,5 +80,7 @@
 /Assets
 /build
 /lib/shared/keys.dart
+/android/app/google-services.json
+/android/app/key.jks
 
 
