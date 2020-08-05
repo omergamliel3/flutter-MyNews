@@ -30,7 +30,7 @@ class WelcomeDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'We are trying our best to personalize your news reading experience',
+            'Welcome to MyNews!\n\nWe are trying to bring you the best news reading experience',
           ),
           Text(
             '\nSend feedback to help us improve the app'.toUpperCase(),

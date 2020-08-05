@@ -48,6 +48,7 @@ class _SavedArticlesPage extends State<SavedArticlesPage>
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     // crate button scroll controller
     _hideButtonController = new ScrollController();
+    _listkey = GlobalKey<AnimatedListState>();
     super.initState();
   }
 
@@ -147,16 +148,6 @@ class _SavedArticlesPage extends State<SavedArticlesPage>
     return actions;
   }
 
-  // build scaffold body widget method
-  Widget _buildScaffoldBody() {
-    List<Article> articles = DBservice.savedArticles;
-    if (articles != null && articles.isNotEmpty) {
-      return _buildAnimatedList(articles);
-    } else {
-      return EmptyPage();
-    }
-  }
-
   // remove item from favorites animated list
   void _removeItem(int index) {
     _listkey.currentState
@@ -192,11 +183,14 @@ class _SavedArticlesPage extends State<SavedArticlesPage>
           // app bar action buttons
           actions: _buildActions(),
         ),
-        //floatingActionButton: _buildFAB(),
         body: ScopedModelDescendant(
             builder: (BuildContext context, Widget child, MainModel model) {
-          _listkey = GlobalKey<AnimatedListState>();
-          return _buildScaffoldBody();
+          List<Article> articles = DBservice.savedArticles;
+          if (articles != null && articles.isNotEmpty) {
+            return _buildAnimatedList(articles);
+          } else {
+            return EmptyPage();
+          }
         }));
   }
 }

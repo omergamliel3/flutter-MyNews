@@ -19,9 +19,8 @@ import 'package:MyNews/services/url_helper.dart';
 enum SearchDateMode { Default, Custom, Week, Month }
 
 /// MainModel Class
-class MainModel extends Model {
-  // Class Services
 
+class MainModel extends Model {
   // _sharedPreferences instance
   SharedPreferences _sharedPreferences;
   SharedPreferences get sharedPreferences => _sharedPreferences;
@@ -50,20 +49,14 @@ class MainModel extends Model {
   /// News list to store search News from the SearchPage
   List<News> _searchNews = [];
 
-  int _tabBarIndex = 0; // tabBar index
+  int _followingPageTabBarIndex = 0; // following page tab index
 
   int _homePageTabBarIndex = 0; // home page tabBar index
-
-  int get homePageTabBarindex => _homePageTabBarIndex;
-
-  void setHomePageTabBarIndex(int index) {
-    _homePageTabBarIndex = index;
-  }
 
   int _pageIndex = 0; // navigation page index
 
   bool _isDark = false; // isDark bool to determine the theme mode
-  int _selectedAccentColor;
+  int _selectedAccentColor; // selected accent color index
 
   bool _privateSession = false; // Private Session
   String _searchCountry; // search country
@@ -77,6 +70,7 @@ class MainModel extends Model {
 
   // not supported country string
   bool _countryNotSupported;
+
   // _searchCountryNotSupported get method
   bool get searchCountryNotSupported => _countryNotSupported;
 
@@ -152,7 +146,7 @@ class MainModel extends Model {
     // if current page index equals to current change NavBar,
     // call fetchNews method, and update searchMode
 
-    if (_tabBarIndex == index) {
+    if (_followingPageTabBarIndex == index) {
       fetchNews(
           forceFetch: true,
           saveSearchNews: false,
@@ -259,14 +253,20 @@ class MainModel extends Model {
   }
 
   /// _tabBarIndex getter
-  int get tabBarIndex {
-    return _tabBarIndex;
+  int get followingPageTabBarIndex {
+    return _followingPageTabBarIndex;
   }
 
   /// set tabBarIndex method
   void setTabBarIndex(int index) {
     if (index == null) return;
-    _tabBarIndex = index;
+    _followingPageTabBarIndex = index;
+  }
+
+  int get homePageTabBarindex => _homePageTabBarIndex;
+
+  void setHomePageTabBarIndex(int index) {
+    _homePageTabBarIndex = index;
   }
 
   /// _pageIndex getter
@@ -373,6 +373,10 @@ class MainModel extends Model {
       _newsList.forEach((List<News> element) {
         element.clear();
       });
+      // clear following temp data in prefs
+      _followingTopicsList.forEach((element) {
+        DBservice.clearTable(element);
+      });
     }
     notifyListeners();
   }
@@ -380,7 +384,7 @@ class MainModel extends Model {
   /// initalized prefs method
   Future<void> initAppData() async {
     // set page index
-    _tabBarIndex = 0;
+    _followingPageTabBarIndex = 0;
 
     // first time open the app, set all values in prefs
     if (_sharedPreferences.getString('NavBar0') == null) {
@@ -661,7 +665,7 @@ class MainModel extends Model {
 
       // insert fetchedNewsList to DB
       fetchedNewsList.forEach((element) async {
-        await DBservice.insertTempNews(element, index);
+        await DBservice.insertTempNews(element, index: index);
       });
     }
     // topics page case
@@ -671,7 +675,7 @@ class MainModel extends Model {
 
       // insert fetchedNewsList to DB
       fetchedNewsList.forEach((element) async {
-        await DBservice.insertTempNews(element, index, following: search);
+        await DBservice.insertTempNews(element, following: search);
       });
     }
     // notify the scoped-model widgets that something has change
@@ -880,7 +884,7 @@ class MainModel extends Model {
   Future<void> fetchHeadlinesData([bool connectivity = false]) async {
     for (var i = 0; i < 2; i++) {
       // get temp saved localheadlinesNews from db
-      List<News> localheadlinesNews = await DBservice.getTempNews(i);
+      List<News> localheadlinesNews = await DBservice.getTempNews(index: i);
       // if localheadlinesNews contains data
       if (localheadlinesNews != null && localheadlinesNews.isNotEmpty) {
         // data expire time validation
@@ -902,7 +906,7 @@ class MainModel extends Model {
     for (var i = 0; i < _followingTopicsList.length; i++) {
       // get temp following news data from db
       List<News> followingNews =
-          await DBservice.getTempNews(i, following: _followingTopicsList[i]);
+          await DBservice.getTempNews(following: _followingTopicsList[i]);
 
       if (followingNews != null && followingNews.isNotEmpty) {
         // data expire time validation

@@ -10,13 +10,6 @@ String linkedinUrl =
 
 String placeHolderAsset = 'Assets/images/placeHolder.jpg';
 String loadingImageAsset = 'Assets/images/loading.jpg';
-Map<String, int> pageIndexMap = {
-  'Headlines': 0,
-  'Topics': 1,
-  'Saved': 2,
-  'Search': 3,
-  'Settings': 4
-};
 
 List<String> savedPrefsStr = [
   'showBottomSheet',
@@ -25,6 +18,7 @@ List<String> savedPrefsStr = [
   'SettingsDialog',
   'NotSupportedCountry'
 ];
+
 List<String> defaultsCategories = [
   'Business',
   'Entertainment',
@@ -35,13 +29,10 @@ List<String> defaultsCategories = [
   'Technology'
 ];
 
-//String defaultSearchCountry = 'United States';
 String searchCountryPrefsKey = 'lastLocation';
 String fromDatePrefsKey = 'fromDate';
 String toDatePrefsKey = 'toDate';
 String searchDateModePrefsKey = 'SearchDateMode';
-String dummyText =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse accumsan ligula at diam ultricies ornare. Ut at finibus augue. Ut posuere magna quis enim consectetur ornare. Donec ac sem turpis. In condimentum neque et odio commodo, in scelerisque mi pellentesque. Mauris facilisis a sapien ac consequat. Aenean congue tempor porttitor. Integer aliquet tincidunt neque vel dignissim. Integer iaculis aliquam ligula vitae tristique. Aliquam eget sollicitudin ante. Aliquam a tortor diam. Vivamus vel massa enim. Morbi volutpat est a nisl tincidunt, eu tempus augue semper. Donec a metus eget ipsum rhoncus bibendum sed at erat. Mauris eu pellentesque metus. Nunc ac dignissim magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum dignissim aliquam nibh, blandit efficitur ipsum cursus sed. Vestibulum tristique vehicula ex quis posuere. Maecenas blandit magna at tincidunt hendrerit. Sed viverra, purus ac eleifend ultricies, velit augue venenatis enim, ac condimentum quam justo et tellus. Duis sit amet pulvinar massa. Duis ac erat nec nisi facilisis pellentesque suscipit nec urna. Proin euismod ultricies ex. Morbi euismod porta odio, eget iaculis lacus efficitur a. Suspendisse ac commodo urna. Mauris non augue tristique, scelerisque tellus quis, euismod sapien. Nam hendrerit lectus at urna pulvinar, a pellentesque justo mollis. Cras lobortis libero nulla. Donec cursus odio est, eget suscipit lorem semper et. Sed non accumsan ligula, ac accumsan sem. Morbi non orci rhoncus, cursus ligula eu, malesuada mi. Mauris fringilla rutrum sapien, et rhoncus nisi hendrerit vitae. Nulla sit amet purus nec justo porta congue. Proin eget lorem id libero vehicula commodo et fringilla est. Duis ac nibh porttitor, gravida nisi non, rutrum eros. Morbi nec diam a libero venenatis pretium id ac felis. Phasellus quis rutrum nulla. Maecenas aliquet tincidunt libero, et porta sem pretium nec. Phasellus vitae magna dui. Quisque scelerisque ex vitae metus venenatis, eu porta nulla dictum. Integer quis libero et justo elementum auctor id eget ante. Nunc vitae mattis justo, sed luctus eros. Nam in justo enim. In vitae blandit urna. Curabitur accumsan magna a urna suscipit, a fringilla ipsum bibendum. Proin sit amet odio sit amet odio eleifend molestie et sed magna. Integer facilisis ullamcorper nibh, quis sollicitudin lectus mattis eu. Vestibulum eu tristique leo, ut tincidunt felis. Suspendisse et mollis enim, lacinia ornare massa. Etiam nec euismod odio, in pretium nunc. Fusce blandit suscipit congue. Ut non mattis dolor, vel dignissim felis. Mauris vel dictum mauris. Vivamus id vulputate urna. Praesent ac eleifend odio. Morbi commodo tincidunt urna in pretium. Proin posuere commodo arcu non fermentum. Aliquam ut risus massa. Vivamus sit amet velit ac libero rutrum ullamcorper. Cras vel arcu a arcu rhoncus suscipit dictum nec tellus. Etiam rutrum velit in sodales dignissim. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam urna leo, condimentum ac cursus non, maximus in ante. Pellentesque ultricies neque nec diam sagittis, non sodales dolor aliquam. Etiam sagittis quis orci ut dignissim. Nullam maximus augue vel gravida fringilla. Suspendisse potenti. Nam finibus egestas elit, in lacinia dolor varius eget. Maecenas a posuere eros. Donec rhoncus nisl est, ac euismod mi rutrum ut. Nulla ornare vel ligula vel consequat. Suspendisse sit amet odio enim. In luctus consequat diam vel sollicitudin. Nam scelerisque scelerisque arcu a congue. Curabitur et dolor eu tortor viverra convallis sit amet tempus diam. Ut eget tortor vel sem consequat tempus non vitae massa. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut molestie ut elit vel ultrices. Mauris malesuada arcu ut porta luctus. Nunc dapibus convallis tortor non egestas. Cras ac urna sit amet ex tempor gravida in sed nulla. Nulla porttitor id arcu id laoreet. Mauris varius ex diam, sed posuere mi aliquet ut. Vestibulum suscipit, tortor in tincidunt vulputate, justo felis pretium neque, at tincidunt nisl orci vitae mi. Donec eu orci metus. Duis congue pharetra lacus. Nam vitae diam vulputate, pulvinar magna convallis, tempor massa. Aliquam porttitor ante lobortis odio condimentum, nec vulputate leo placerat. Nunc non magna quam. Proin ac elit nisl. Etiam lobortis elit ut iaculis semper. Maecenas aliquam pulvinar nibh ac egestas. Duis interdum ut risus sit amet iaculis. Ut vulputate justo at suscipit porta. Nam rhoncus dui nec elit rhoncus consectetur. Praesent aliquam justo id ante ullamcorper, eu lacinia ligula bibendum. Donec consequat mi sit amet ipsum ornare, eu malesuada felis mattis. In quis leo et massa fringilla pellentesque eu eu ante. Duis libero elit, consequat ut nibh in, fringilla gravida ex. Nam ac elit ultricies, mollis nibh sit amet, scelerisque purus. Vestibulum pretium imperdiet lobortis. Nullam iaculis risus vitae magna efficitur, et posuere lacus lacinia. Suspendisse turpis ipsum, pretium sit amet tempus ac, ultrices at purus. Phasellus rutrum eu nunc a tristique. Phasellus elit tellus, pulvinar eget elit sit amet, faucibus tristique tellus. Proin sagittis consectetur accumsan. Donec pulvinar metus at nibh placerat aliquam. Maecenas auctor pulvinar volutpat. Nam ut purus lectus. Vivamus quis tincidunt magna. Donec tempor eleifend neque, nec varius tortor dapibus eget. Mauris dignissim vitae risus eget venenatis.';
 
 List<String> apiCountries = [
   'AE',

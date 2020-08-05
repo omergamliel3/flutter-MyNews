@@ -11,10 +11,12 @@ import 'package:MyNews/models/news.dart';
 import 'package:MyNews/shared/global_values.dart';
 
 class DBservice {
+  // constants
   static const _kDbFileName = 'sqflite_ex.db';
   static const _kDbTableName = 'saved_articles_table';
   static const _kDBLocalNewsTableName = 'local_news_table';
   static const _kDBGlobalNewsTableName = 'global_news_table';
+  // local variables
   static final AsyncMemoizer _memoizer = AsyncMemoizer();
   static List<Article> _savedArticles = [];
   static Database _db;
@@ -141,7 +143,7 @@ class DBservice {
     }
   }
 
-  /// execute following table with a given index
+  /// execute following table with a given following topic string
   static Future<void> createFollowingTable(String following) async {
     await _db.execute('''
         CREATE TABLE $following(
@@ -236,23 +238,6 @@ class DBservice {
     }
   }
 
-  /// Updates records in the db table.
-  /// return [true/false] if successfuly updated article
-  static Future<bool> updateArticle(Article article) async {
-    try {
-      await _db.rawUpdate(
-        /*sql=*/ '''UPDATE $_kDbTableName
-                    SET source = ?
-                    WHERE id = ?''',
-        /*args=*/ ['O.G MOBILE DEV', article.id],
-      );
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
-
   /// Return [true/false] if url exists in savedArticles
   static bool isSaved(String url) {
     for (var i = 0; i < _savedArticles.length; i++) {
@@ -264,8 +249,8 @@ class DBservice {
   }
 
   /// insert temp news
-  static Future<bool> insertTempNews(News news, int index,
-      {String following}) async {
+  static Future<bool> insertTempNews(News news,
+      {int index, String following}) async {
     String tableName;
     // following insert
     if (following != null) {
@@ -315,7 +300,7 @@ class DBservice {
   }
 
   /// Retrieves rows from the db table.
-  static Future<List<News>> getTempNews(int index, {String following}) async {
+  static Future<List<News>> getTempNews({int index, String following}) async {
     String tableName;
     if (following != null) {
       tableName = following;

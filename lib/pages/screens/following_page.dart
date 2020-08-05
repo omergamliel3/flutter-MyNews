@@ -45,7 +45,7 @@ class _TopicsPageState extends State<TopicsPage> with TickerProviderStateMixin {
   }
 
   // build TabBar widget method
-  _buildTabBar(TabController _tabController) {
+  TabBar _buildTabBar(TabController _tabController) {
     var tabBar = TabBar(
         controller: _tabController,
         isScrollable: true,
@@ -63,7 +63,7 @@ class _TopicsPageState extends State<TopicsPage> with TickerProviderStateMixin {
   }
 
   // build actions widget method
-  _buildActions() {
+  List<Widget> _buildActions() {
     var actions = <Widget>[
       IconButton(
         tooltip: 'Search',
@@ -91,7 +91,7 @@ class _TopicsPageState extends State<TopicsPage> with TickerProviderStateMixin {
   // build tab controller
   TabController _buildTabController() {
     var _tabController = TabController(
-        initialIndex: widget.model.tabBarIndex,
+        initialIndex: widget.model.followingPageTabBarIndex,
         length: widget.model.getfollowingTopicsList.length,
         vsync: this);
     _tabController.addListener(() {

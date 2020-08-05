@@ -45,7 +45,6 @@ class _SettingsPageState extends State<SettingsPage>
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // scaffold key
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isSaved = false;
   // FormFields List of FocusNode
   List<FocusNode> _formFieldfocusNodeList = [];
   // TextEditingController list
@@ -101,13 +100,9 @@ class _SettingsPageState extends State<SettingsPage>
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
-  // index NavBar TextField Widget method
-  Widget _buildNavBarTextField(int index) {
-    // set TextField Attributes
+  // following TextFormField method
+  Widget _buildFollowingTextField(int index) {
     FocusNode focusNode = _formFieldfocusNodeList[index];
-    //Color iconColor = focusNode.hasFocus ? Theme.of(context).accentColor : null;
-    //Widget icon =
-    //Icon(widget.model.getNavBarIconDataList[index], color: iconColor);
     Color dynamicColor = widget.model.isDark ? Colors.grey : Colors.black;
 
     // TextFormField Widget
@@ -136,6 +131,9 @@ class _SettingsPageState extends State<SettingsPage>
               validator: (String value) {
                 if (value.isEmpty) {
                   return 'Topic ${index + 1} is required';
+                }
+                if (value.replaceAll(' ', '').length == 0) {
+                  return 'Enter a valid topic';
                 }
                 for (int i = 0; i < value.length; i++) {
                   if (!value[i].contains(RegExp(r'[a-zA-Z0-9 ]'))) {
@@ -174,10 +172,8 @@ class _SettingsPageState extends State<SettingsPage>
                       widget.model.getfollowingTopicsList[index];
                   String value = _textEditingControllerList[index].text;
                   if (value != strButtonNavBar && value != '') {
-                    _isSaved = true;
-                    widget.model.setButtonNavBar(index, value.trim());
                     // call submit form
-                    _submitForm();
+                    _submitForm(index, value);
                   }
                 },
                 child: Text(
@@ -207,7 +203,7 @@ class _SettingsPageState extends State<SettingsPage>
             );
           },
           isExpanded: _expandedList[index],
-          body: _buildNavBarTextField(index));
+          body: _buildFollowingTextField(index));
     });
     // return the ExpansionPanelList with _expansionPanelList as children
     return ExpansionPanelList(
@@ -330,7 +326,19 @@ class _SettingsPageState extends State<SettingsPage>
   }
 
   // submit form method
-  void _submitForm() {
+  void _submitForm(int index, String value) {
+    // unfocus from the text field
+    _unFocusScope();
+    // Validate returns true if the form is valid, otherwise false.
+    if (_formKey.currentState.validate()) {
+      widget.model.setButtonNavBar(index, value.trim());
+      _expandedList[index] = false;
+      _showSnackBar();
+    }
+  }
+
+  // show snack bar method
+  void _showSnackBar() {
     // snackBar
     Color textColor =
         widget.model.isDark ? Theme.of(context).accentColor : null;
@@ -345,16 +353,9 @@ class _SettingsPageState extends State<SettingsPage>
         style: TextStyle(color: textColor),
       ),
     );
-    // unfocus from the text field
-    _unFocusScope();
-    // Validate returns true if the form is valid, otherwise false.
-    if (_formKey.currentState.validate()) {
-      // show SnackBar at the buttom of the scaffold
-      if (_isSaved) {
-        _scaffoldKey.currentState.showSnackBar(snackBar);
-        _isSaved = false;
-      }
-    }
+
+    // show SnackBar at the buttom of the scaffold
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   // build scaffold body widget method

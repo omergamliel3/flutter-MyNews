@@ -64,12 +64,8 @@ class _PlayGroundPageState extends State<PlayGroundPage> {
                                     articleDataList[index].url);
                               },
                               onLongPress: () {
-                                if (index == 0)
-                                  DBservice.updateArticle(
-                                      articleDataList[index]);
-                                else
-                                  DBservice.deleteArticle(
-                                      articleDataList[index].url);
+                                DBservice.deleteArticle(
+                                    articleDataList[index].url);
 
                                 setState(() {
                                   displayWidget = displayWidget = Center(
