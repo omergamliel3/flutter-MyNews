@@ -82,5 +82,8 @@
 /lib/shared/keys.dart
 /android/app/google-services.json
 /android/app/key.jks
-
-
+.flutter-plugins-dependencies
+pubspec.lock
+/iOS/flutter/flutter_export_environment.sh
+/.vscode
+/.gradle
