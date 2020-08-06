@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:MyNews/services/prefs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' as scheduler;
 import 'package:flutter/services.dart';
@@ -99,15 +100,15 @@ class _LoadingScreenState extends State<LoadingScreen>
     // init app data (prefs and local)
     await widget._model.initAppData();
 
-    // delete db for debug
-    //await DBservice.deleteDB();
-
     // init db
     bool initDB = await DBservice.asyncInitDB();
     // close the app if failed to init db
     if (!initDB) {
       SystemNavigator.pop();
     }
+
+    // init prefs
+    Prefs.initPrefs();
 
     // fetch temp news data from db
     await widget._model.fetchHeadlinesData(connectivity);

@@ -4,6 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Prefs class
 class Prefs {
+  static SharedPreferences _sharedPreferences;
+
+  /// init prefs
+  static Future<void> initPrefs() async {
+    _sharedPreferences = await SharedPreferences.getInstance();
+  }
+
   /// get suggestions method
   static Future<List<String>> getSuggestions(String search) async {
     search = search.trim().toLowerCase();
@@ -16,8 +23,7 @@ class Prefs {
     String pattern = '\n';
 
     // get suggestions from prefs
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String savedSuggestions = prefs.getString(prefsKey);
+    String savedSuggestions = _sharedPreferences.getString(prefsKey);
     if (savedSuggestions == null || savedSuggestions.isEmpty) {
       return suggestions;
     }
@@ -50,12 +56,11 @@ class Prefs {
     search = search.trim().toLowerCase();
     String prefsKey = 'suggestions';
     String pattern = '\n';
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String savedSuggestions = prefs.getString(prefsKey);
+    String savedSuggestions = _sharedPreferences.getString(prefsKey);
     // if suggestions is null set string prefs first time
     if (savedSuggestions == null) {
       String str = search + pattern;
-      prefs.setString(prefsKey, str);
+      _sharedPreferences.setString(prefsKey, str);
       //print('newSuggestions (first time): $str');
       return;
     }
@@ -69,16 +74,15 @@ class Prefs {
     // set news suggestions
     String newSuggestions = savedSuggestions + search + pattern;
     //print('newSuggestions:\n$newSuggestions');
-    prefs.setString(prefsKey, newSuggestions);
+    _sharedPreferences.setString(prefsKey, newSuggestions);
   }
 
   /// savedInPrefs method to return true / false if showBottomSheet / WelcomeDialog / FavoritesDialog / SettingsDialog stored in SharedPreferences
   static Future<bool> savedInPrefs(String str) async {
     if (savedPrefsStr.contains(str)) {
       String prefsKey = str;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (prefs.getBool(prefsKey) == null) {
-        prefs.setBool(prefsKey, true);
+      if (_sharedPreferences.getBool(prefsKey) == null) {
+        _sharedPreferences.setBool(prefsKey, true);
         return true;
       }
     }

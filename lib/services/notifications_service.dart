@@ -54,7 +54,7 @@ class Notifications {
       await flutterLocalNotificationsPlugin.showDailyAtTime(
         0,
         'Daily news',
-        'Check out latest local, world, following headlines',
+        'Check out latest local, world and following headlines',
         Time(hour, 0, 0),
         platformChannelSpecifics,
       );

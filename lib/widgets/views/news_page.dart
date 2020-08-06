@@ -89,17 +89,7 @@ class _NewsPageState extends State<NewsPage> {
 
     // On There is no internet connection error
     if (snapshot.data['message'] == 'There is no internet connection') {
-      //  show no connection Toast
-      Fluttertoast.showToast(
-        msg: 'There is no internet connection',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
-
-      // call repeate check connectivity to fetch when device has connection
       repeateCheckConnectivity();
-      // return loading widget
-      return _buildLoadingWidget();
     }
 
     return _buildErrorWidget(snapshot.data['message']);
@@ -246,3 +236,13 @@ class _NewsPageState extends State<NewsPage> {
 //   }
 //   return Future.value(true);
 // }
+//  show no connection Toast
+// Fluttertoast.showToast(
+//   msg: 'There is no internet connection',
+//   toastLength: Toast.LENGTH_LONG,
+//   gravity: ToastGravity.BOTTOM,
+// );
+// call repeate check connectivity to fetch when device has connection
+
+// return loading widget
+//return _buildLoadingWidget();

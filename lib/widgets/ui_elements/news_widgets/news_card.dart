@@ -179,41 +179,50 @@ class _NewsCardState extends State<NewsCard>
       itemBuilder: (context) => <PopupMenuEntry>[
         PopupMenuItem(
             value: 0,
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.launch),
-                SizedBox(width: 10.0),
-                Text('Go to ${widget.news.source}')
-              ],
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.web),
+                  SizedBox(width: 10.0),
+                  Text('Full article')
+                ],
+              ),
             )),
         PopupMenuItem(
             value: 1,
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.web),
-                SizedBox(width: 10.0),
-                Text('Full article')
-              ],
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.launch),
+                  SizedBox(width: 10.0),
+                  Text('Go to ${widget.news.source}')
+                ],
+              ),
             )),
         PopupMenuDivider(),
         PopupMenuItem(
-            value: 2,
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.report_problem),
-                SizedBox(width: 10.0),
-                Text('Report an issue')
-              ],
+            value: 3,
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.report_problem),
+                  SizedBox(width: 10.0),
+                  Text('Report an issue')
+                ],
+              ),
             )),
       ],
       onSelected: (index) {
         if (index == 0) {
+          _openInWebView(widget.news.url, widget.news.title);
+        } else if (index == 1) {
           String sourceUrl =
               widget.news.url.substring(0, widget.news.url.indexOf('/', 10));
           _openInWebView(sourceUrl, widget.news.source);
-        } else if (index == 1) {
-          _openInWebView(widget.news.url, widget.news.title);
-        } else {
+        } else if (index == 2) {
           convertWidgetToImage();
         }
       },
