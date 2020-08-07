@@ -881,7 +881,7 @@ class MainModel extends Model {
   }
 
   /// fetch temp headlines news data from db at
-  Future<void> fetchHeadlinesData([bool connectivity = false]) async {
+  Future<void> fetchHeadlinesData([bool connectivity = true]) async {
     for (var i = 0; i < 2; i++) {
       // get temp saved localheadlinesNews from db
       List<News> localheadlinesNews = await DBservice.getTempNews(index: i);
@@ -892,8 +892,7 @@ class MainModel extends Model {
             DateTime.parse(localheadlinesNews[0].createdTime);
         Duration difference = DateTime.now().difference(createdTime);
         // if connectivity is true or difference smaller than 1 hour
-        if (difference.inMinutes < 59 || connectivity) {
-          //print('fetch headlines news data from db!');
+        if (difference.inMinutes < 59 || !connectivity) {
           // set homePageListNews to the saved db data.
           _homePageListNews[i] = List.from(localheadlinesNews);
         }
@@ -902,7 +901,7 @@ class MainModel extends Model {
   }
 
   /// fetch temp following news data from db
-  Future<void> fetchFollowingData([bool connectivity = false]) async {
+  Future<void> fetchFollowingData([bool connectivity = true]) async {
     for (var i = 0; i < _followingTopicsList.length; i++) {
       // get temp following news data from db
       List<News> followingNews =
@@ -913,8 +912,7 @@ class MainModel extends Model {
         DateTime createdTime = DateTime.parse(followingNews[0].createdTime);
         Duration difference = DateTime.now().difference(createdTime);
         // if connectivity is true or difference smaller than 1 hour
-        if (difference.inMinutes < 59 || connectivity) {
-          //print('fetch following news data from db!');
+        if (difference.inMinutes < 59 || !connectivity) {
           // set local following news list to [followingNews]
           _newsList[i] = List.from(followingNews);
         }
