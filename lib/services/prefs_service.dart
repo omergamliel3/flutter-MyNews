@@ -1,14 +1,21 @@
+import 'package:flutter/material.dart';
+
 import 'package:MyNews/helpers/custom_extentions.dart';
+
 import 'package:MyNews/shared/global_values.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Prefs class
 class Prefs {
   static SharedPreferences _sharedPreferences;
+  static const String _sourcesSplitPattern = '\n';
+  static const String _hiddenSourcePrefsKey = 'HiddenSources';
 
   /// init prefs
   static Future<void> initPrefs() async {
     _sharedPreferences = await SharedPreferences.getInstance();
+    //_sharedPreferences.remove(_hiddenSourcePrefsKey);
   }
 
   /// get suggestions method
@@ -87,5 +94,54 @@ class Prefs {
       }
     }
     return false;
+  }
+
+  /// return [true/false] if hidden sources list contains [source]
+  static bool isSourceHidden(String source) {
+    // get raw hidden sources string from prefs
+    String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
+    if (rawSources != null && rawSources.isNotEmpty) {
+      // split raw hidden sources to strings list
+      List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
+      // return whatever hiddenSources contains souce
+      return hiddenSources.contains(source);
+    }
+    // return source if rawSources is null or empty
+    return false;
+  }
+
+  // add source to hidden sources prefs
+  static void addHiddenSource(String source) {
+    // get raw hidden sources string from prefs
+    String hiddenSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
+    if (hiddenSources == null || hiddenSources.isEmpty) {
+      hiddenSources = source;
+    } else {
+      List<String> hiddenSourcesList =
+          hiddenSources.split(_sourcesSplitPattern);
+      // if hidden sources contains source return
+      if (hiddenSourcesList.contains(source)) {
+        return;
+      }
+      hiddenSources += '$_sourcesSplitPattern$source';
+    }
+    print(hiddenSources);
+    // set updated hidden sources in prefs
+    _sharedPreferences.setString(_hiddenSourcePrefsKey, hiddenSources);
+  }
+
+  /// remove source from hidden source prefs
+  static void removeHiddenSource(String source, BuildContext context) {
+    // get raw hidden sources string from prefs
+    String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
+    if (rawSources != null && rawSources.isNotEmpty) {
+      // split rawSources to strings list
+      List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
+      // remove source from hiddenSources
+      hiddenSources.remove(source);
+      // set updated hidden sources in prefs
+      _sharedPreferences.setString(
+          _hiddenSourcePrefsKey, hiddenSources.join(_sourcesSplitPattern));
+    }
   }
 }

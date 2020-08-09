@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:MyNews/services/prefs_service.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:geolocator/geolocator.dart';
@@ -636,11 +637,16 @@ class MainModel extends Model {
       final News news = News.fromMap(
           newsData: newsListData['articles'][i],
           textDirection: local ? _localTextDir : 'ltr');
-      // add the news to the fetchednewslist, if news title does not exists and title is not empty
+      // evoid add empty articles
       bool addArticle = true;
       if (news.title == '' || news.title == null) {
         addArticle = false;
+      }
+      // do not add article if source is hidden by the user
+      else if (Prefs.isSourceHidden(news.source)) {
+        addArticle = false;
       } else {
+        // evoid duplicates with previous articles
         for (var j = 0; j < fetchedNewsList.length; j++) {
           if (news.title == fetchedNewsList[j].title) {
             addArticle = false;
@@ -918,6 +924,24 @@ class MainModel extends Model {
         }
       }
     }
+  }
+
+  /// remove hidden sources from news list data
+  void removeHiddenSources(String source) {
+    // remove hidden sources from local, global headlines news list data
+    for (var i = 0; i < _homePageListNews.length; i++) {
+      if (_homePageListNews[i] != null && _homePageListNews[i].isNotEmpty) {
+        _homePageListNews[i].removeWhere((element) => element.source == source);
+      }
+    }
+    // remove hidden sources from following news list data
+    for (var i = 0; i < _newsList.length; i++) {
+      if (_newsList[i] != null && _newsList[i].isNotEmpty) {
+        _newsList[i].removeWhere((element) => element.source == source);
+      }
+    }
+    // notify the model has change to update news list data listeners
+    notifyListeners();
   }
 
   /// notifyListeners that the model has changed

@@ -24,6 +24,7 @@ import 'package:MyNews/services/custom_services.dart';
 import 'package:MyNews/services/db_service.dart';
 //import 'package:MyNews/services/admob_service.dart';
 import 'package:MyNews/services/mail_service.dart';
+import 'package:MyNews/services/prefs_service.dart';
 
 import 'package:MyNews/shared/global_values.dart';
 
@@ -201,6 +202,18 @@ class _NewsCardState extends State<NewsCard>
                 ],
               ),
             )),
+        PopupMenuItem(
+            value: 2,
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.remove_circle),
+                  SizedBox(width: 10.0),
+                  Text('Hide articles from ${widget.news.source}')
+                ],
+              ),
+            )),
         PopupMenuDivider(),
         PopupMenuItem(
             value: 3,
@@ -223,6 +236,10 @@ class _NewsCardState extends State<NewsCard>
               widget.news.url.substring(0, widget.news.url.indexOf('/', 10));
           _openInWebView(sourceUrl, widget.news.source);
         } else if (index == 2) {
+          Prefs.addHiddenSource(widget.news.source);
+          // invoke remove hidden sources from newsList main model
+          // invoke news_page view setState callback
+        } else if (index == 3) {
           convertWidgetToImage();
         }
       },
