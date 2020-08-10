@@ -39,7 +39,13 @@ class MainModel extends Model {
   List<List<News>> _newsList = [];
 
   /// Master List<News> list to store home page local and global List<News>
-  List<List<News>> _homePageListNews = [[], []];
+  List<List<News>> _headlinesNewsList = [[], []];
+
+  /// snapshot reference to [_newsList]
+  List<List<News>> _newsListSnap = [];
+
+  /// snapshot reference to [_headlinesNewsList]
+  List<List<News>> _headlinesNewsListSnap = [[], []];
 
   /// following topics list values
   List<String> _followingTopicsList = [];
@@ -90,7 +96,7 @@ class MainModel extends Model {
     // implement disable location
     if (_disableLocation) {
       _searchCountry = null;
-      _homePageListNews[0].clear();
+      _headlinesNewsList[0].clear();
       _sharedPreferences.remove('lastLocation');
     }
     _sharedPreferences.setBool('disableLocation', _disableLocation);
@@ -115,11 +121,11 @@ class MainModel extends Model {
     return List.from(_newsList);
   }
 
-  /// _homePageListNews getter
-  List<List<News>> get homePageListNews {
-    if (_homePageListNews == null || _homePageListNews.isEmpty) return null;
+  /// _headlinesNewsList getter
+  List<List<News>> get headlinesNewsList {
+    if (_headlinesNewsList == null || _headlinesNewsList.isEmpty) return null;
 
-    return List.from(_homePageListNews);
+    return List.from(_headlinesNewsList);
   }
 
   /// followingTopicsList getter
@@ -299,8 +305,8 @@ class MainModel extends Model {
       _sharedPreferences.setString(searchCountryPrefsKey, country);
     }
 
-    // clear local homePageListNews
-    _homePageListNews[0].clear();
+    // clear local headlinesNewsList
+    _headlinesNewsList[0].clear();
     notifyListeners();
   }
 
@@ -517,7 +523,7 @@ class MainModel extends Model {
       List<News> newsList;
       // headlines case
       if (headlines)
-        newsList = _homePageListNews[index];
+        newsList = _headlinesNewsList[index];
       // topics case
       else
         newsList = _newsList[index];
@@ -544,7 +550,7 @@ class MainModel extends Model {
     } else if (headlines) {
       // when index = 0, local tab, else index = 1, global tab.
       local = index == 0;
-      _homePageListNews[index].clear();
+      _headlinesNewsList[index].clear();
     } else {
       _newsList[index].clear();
     }
@@ -667,7 +673,7 @@ class MainModel extends Model {
     }
     // headlines page case
     else if (headlines) {
-      _homePageListNews[index] = List.from(fetchedNewsList);
+      _headlinesNewsList[index] = List.from(fetchedNewsList);
 
       // insert fetchedNewsList to DB
       fetchedNewsList.forEach((element) async {
@@ -805,7 +811,7 @@ class MainModel extends Model {
               // if exists, save country in prefs
               checkSupportedCountry(_searchCountry);
               if (refetch) {
-                _homePageListNews[0].clear();
+                _headlinesNewsList[0].clear();
                 notifyListeners();
               }
               return true;
@@ -839,7 +845,7 @@ class MainModel extends Model {
             // if exists, save country in prefs
             checkSupportedCountry(_searchCountry);
             if (refetch) {
-              _homePageListNews[0].clear();
+              _headlinesNewsList[0].clear();
               notifyListeners();
             }
             return true;
@@ -899,8 +905,8 @@ class MainModel extends Model {
         Duration difference = DateTime.now().difference(createdTime);
         // if connectivity is true or difference smaller than 1 hour
         if (difference.inMinutes < 59 || !connectivity) {
-          // set homePageListNews to the saved db data.
-          _homePageListNews[i] = List.from(localheadlinesNews);
+          // set headlinesNewsList to the saved db data.
+          _headlinesNewsList[i] = List.from(localheadlinesNews);
         }
       }
     }
@@ -928,10 +934,14 @@ class MainModel extends Model {
 
   /// remove hidden sources from news list data
   void removeHiddenSources(String source) {
+    // save snapshot of model news data
+    _saveNewsDataState();
+
     // remove hidden sources from local, global headlines news list data
-    for (var i = 0; i < _homePageListNews.length; i++) {
-      if (_homePageListNews[i] != null && _homePageListNews[i].isNotEmpty) {
-        _homePageListNews[i].removeWhere((element) => element.source == source);
+    for (var i = 0; i < _headlinesNewsList.length; i++) {
+      if (_headlinesNewsList[i] != null && _headlinesNewsList[i].isNotEmpty) {
+        _headlinesNewsList[i]
+            .removeWhere((element) => element.source == source);
       }
     }
     // remove hidden sources from following news list data
@@ -940,8 +950,38 @@ class MainModel extends Model {
         _newsList[i].removeWhere((element) => element.source == source);
       }
     }
+
     // notify the model has change to update news list data listeners
     notifyListeners();
+  }
+
+  /// restore news list data to snap news list data
+  void restoreNewsDataSnapState() {
+    _newsList = List.from(_newsListSnap);
+    _headlinesNewsList = List.from(_headlinesNewsListSnap);
+    // notify the model has change to update news list data listeners
+    notifyListeners();
+  }
+
+  /// saves [_newsList] and [_headlinesNewsList] data state
+  void _saveNewsDataState() {
+    // init snapshot lists
+    _newsListSnap = List.generate(_newsList.length, (_) => []);
+    _headlinesNewsListSnap = [[], []];
+
+    // clone [_headlinesNewsList]
+    for (var i = 0; i < _headlinesNewsList[0].length; i++) {
+      _headlinesNewsListSnap[0].add(_headlinesNewsList[0][i]);
+    }
+    for (var i = 0; i < _headlinesNewsList[1].length; i++) {
+      _headlinesNewsListSnap[1].add(_headlinesNewsList[1][i]);
+    }
+    // clone [_newsList]
+    for (var k = 0; k < _newsList.length; k++) {
+      for (var i = 0; i < _newsList[k].length; i++) {
+        _newsListSnap[k].add(_newsList[k][i]);
+      }
+    }
   }
 
   /// notifyListeners that the model has changed

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:MyNews/helpers/custom_extentions.dart';
+
+import 'package:MyNews/scoped-models/main.dart';
 
 import 'package:MyNews/shared/global_values.dart';
 
@@ -15,7 +15,7 @@ class Prefs {
   /// init prefs
   static Future<void> initPrefs() async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    //_sharedPreferences.remove(_hiddenSourcePrefsKey);
+    _sharedPreferences.remove(_hiddenSourcePrefsKey);
   }
 
   /// get suggestions method
@@ -111,7 +111,9 @@ class Prefs {
   }
 
   // add source to hidden sources prefs
-  static void addHiddenSource(String source) {
+  static void addHiddenSource(String source, MainModel model) {
+    // remove hidden source news data from model
+    model.removeHiddenSources(source);
     // get raw hidden sources string from prefs
     String hiddenSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
     if (hiddenSources == null || hiddenSources.isEmpty) {
@@ -125,23 +127,31 @@ class Prefs {
       }
       hiddenSources += '$_sourcesSplitPattern$source';
     }
-    print(hiddenSources);
+
+    print('add hidden source');
+    print('source to hide: $source');
+    print('Hidden sources:\n$hiddenSources');
     // set updated hidden sources in prefs
     _sharedPreferences.setString(_hiddenSourcePrefsKey, hiddenSources);
   }
 
   /// remove source from hidden source prefs
-  static void removeHiddenSource(String source, BuildContext context) {
+  static void removeLastHiddenSource(MainModel model) {
+    model.restoreNewsDataSnapState();
     // get raw hidden sources string from prefs
     String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
     if (rawSources != null && rawSources.isNotEmpty) {
       // split rawSources to strings list
       List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
+      String _lastHiddenSource = hiddenSources.last;
       // remove source from hiddenSources
-      hiddenSources.remove(source);
+      hiddenSources.remove(_lastHiddenSource);
       // set updated hidden sources in prefs
       _sharedPreferences.setString(
           _hiddenSourcePrefsKey, hiddenSources.join(_sourcesSplitPattern));
+      print('source to remove from hidden sources: $_lastHiddenSource');
+      print('remove hidden sources');
+      print(hiddenSources.join(', '));
     }
   }
 }

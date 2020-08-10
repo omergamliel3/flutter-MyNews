@@ -230,16 +230,19 @@ class _NewsCardState extends State<NewsCard>
       ],
       onSelected: (index) {
         if (index == 0) {
+          // launch news url in WebView
           _openInWebView(widget.news.url, widget.news.title);
         } else if (index == 1) {
           String sourceUrl =
               widget.news.url.substring(0, widget.news.url.indexOf('/', 10));
           _openInWebView(sourceUrl, widget.news.source);
         } else if (index == 2) {
-          Prefs.addHiddenSource(widget.news.source);
-          // invoke remove hidden sources from newsList main model
-          // invoke news_page view setState callback
+          // add hideen source to prefs
+          Prefs.addHiddenSource(widget.news.source, widget.model);
+          // show snackbar
+          _showSnackBar();
         } else if (index == 3) {
+          // convert widget to image and share via email
           convertWidgetToImage();
         }
       },
@@ -338,6 +341,24 @@ class _NewsCardState extends State<NewsCard>
     } catch (e) {
       print(e);
     }
+  }
+
+  // show snack bar method
+  void _showSnackBar() {
+    var snackBar = SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 3000),
+        content: Text(
+          'Restore hidden sources in Settings',
+        ),
+        action: SnackBarAction(
+            label: 'UNDO',
+            onPressed: () {
+              // remove hidden source from prefs
+              Prefs.removeLastHiddenSource(widget.model);
+            }));
+
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   @override

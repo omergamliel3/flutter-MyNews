@@ -99,12 +99,11 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildNewsCardListView() {
     return ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       List<News> newsList;
-
       // adjust newsList reference if saveSearch mode or not
       if (widget.saveSearch) {
         newsList = widget.model.getSearchNews;
       } else if (widget.headlines) {
-        newsList = model.homePageListNews[widget.index];
+        newsList = model.headlinesNewsList[widget.index];
       } else {
         try {
           newsList = model.getNewsList[widget.index];
@@ -184,7 +183,7 @@ class _NewsPageState extends State<NewsPage> {
     if (widget.saveSearch) {
       newsList = widget.model.getSearchNews;
     } else if (widget.headlines) {
-      newsList = widget.model.homePageListNews[widget.index];
+      newsList = widget.model.headlinesNewsList[widget.index];
     } else {
       newsList = widget.model.getNewsList[widget.index];
     }
