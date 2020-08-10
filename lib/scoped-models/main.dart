@@ -904,7 +904,7 @@ class MainModel extends Model {
             DateTime.parse(localheadlinesNews[0].createdTime);
         Duration difference = DateTime.now().difference(createdTime);
         // if connectivity is true or difference smaller than 1 hour
-        if (difference.inMinutes < 59 || !connectivity) {
+        if (difference.inMinutes < 1 || !connectivity) {
           // set headlinesNewsList to the saved db data.
           _headlinesNewsList[i] = List.from(localheadlinesNews);
         }
@@ -924,7 +924,7 @@ class MainModel extends Model {
         DateTime createdTime = DateTime.parse(followingNews[0].createdTime);
         Duration difference = DateTime.now().difference(createdTime);
         // if connectivity is true or difference smaller than 1 hour
-        if (difference.inMinutes < 59 || !connectivity) {
+        if (difference.inMinutes < 1 || !connectivity) {
           // set local following news list to [followingNews]
           _newsList[i] = List.from(followingNews);
         }
@@ -933,7 +933,7 @@ class MainModel extends Model {
   }
 
   /// remove hidden sources from news list data
-  void removeHiddenSources(String source) {
+  void removeHiddenSources(String source) async {
     // save snapshot of model news data
     _saveNewsDataState();
 
@@ -950,15 +950,17 @@ class MainModel extends Model {
         _newsList[i].removeWhere((element) => element.source == source);
       }
     }
-
+    await _clearUpdateDBnewsData();
     // notify the model has change to update news list data listeners
     notifyListeners();
   }
 
   /// restore news list data to snap news list data
-  void restoreNewsDataSnapState() {
+  void restoreNewsDataSnapState() async {
     _newsList = List.from(_newsListSnap);
     _headlinesNewsList = List.from(_headlinesNewsListSnap);
+    // clear and update model to db temp news data
+    await _clearUpdateDBnewsData();
     // notify the model has change to update news list data listeners
     notifyListeners();
   }
@@ -980,6 +982,32 @@ class MainModel extends Model {
     for (var k = 0; k < _newsList.length; k++) {
       for (var i = 0; i < _newsList[k].length; i++) {
         _newsListSnap[k].add(_newsList[k][i]);
+      }
+    }
+  }
+
+  /// clear db temp news tables and insert news data from model to db
+  Future<void> _clearUpdateDBnewsData() async {
+    const _kDBLocalNewsTableName = 'local_news_table';
+    const _kDBGlobalNewsTableName = 'global_news_table';
+    // clear all db tables
+    await DBservice.clearTable(_kDBLocalNewsTableName);
+    await DBservice.clearTable(_kDBGlobalNewsTableName);
+    _followingTopicsList.forEach((element) async {
+      await DBservice.clearTable(element);
+    });
+
+    // insert [_headlinesNewsList] data to db temp news tables
+    for (var i = 0; i < _headlinesNewsList.length; i++) {
+      for (var k = 0; k < _headlinesNewsList[i].length; k++) {
+        DBservice.insertTempNews(_headlinesNewsList[i][k], index: i);
+      }
+    }
+    // insert [_newsList] to data to db temp news tables
+    for (var i = 0; i < _newsList.length; i++) {
+      for (var j = 0; j < _newsList[i].length; j++) {
+        DBservice.insertTempNews(_newsList[i][j],
+            following: _followingTopicsList[i]);
       }
     }
   }

@@ -15,7 +15,6 @@ class Prefs {
   /// init prefs
   static Future<void> initPrefs() async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    _sharedPreferences.remove(_hiddenSourcePrefsKey);
   }
 
   /// get suggestions method
@@ -110,7 +109,17 @@ class Prefs {
     return false;
   }
 
-  // add source to hidden sources prefs
+  /// returns list of all hidden sources
+  static List<String> getHiddenSources() {
+    String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
+    List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
+    if (hiddenSources != null && hiddenSources.isNotEmpty) {
+      return hiddenSources;
+    }
+    return null;
+  }
+
+  /// add source to hidden sources prefs
   static void addHiddenSource(String source, MainModel model) {
     // remove hidden source news data from model
     model.removeHiddenSources(source);
@@ -135,21 +144,27 @@ class Prefs {
     _sharedPreferences.setString(_hiddenSourcePrefsKey, hiddenSources);
   }
 
-  /// remove source from hidden source prefs
-  static void removeLastHiddenSource(MainModel model) {
+  /// remove last source from hidden source prefs
+  static void removeHiddenSource(MainModel model, [String source]) {
+    String sourceToRemove;
     model.restoreNewsDataSnapState();
     // get raw hidden sources string from prefs
     String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
     if (rawSources != null && rawSources.isNotEmpty) {
       // split rawSources to strings list
       List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
-      String _lastHiddenSource = hiddenSources.last;
+      if (source == null) {
+        sourceToRemove = hiddenSources.last;
+      } else {
+        sourceToRemove = source;
+      }
       // remove source from hiddenSources
-      hiddenSources.remove(_lastHiddenSource);
+      hiddenSources.remove(sourceToRemove);
+
       // set updated hidden sources in prefs
       _sharedPreferences.setString(
           _hiddenSourcePrefsKey, hiddenSources.join(_sourcesSplitPattern));
-      print('source to remove from hidden sources: $_lastHiddenSource');
+      print('source to remove from hidden sources: $sourceToRemove');
       print('remove hidden sources');
       print(hiddenSources.join(', '));
     }

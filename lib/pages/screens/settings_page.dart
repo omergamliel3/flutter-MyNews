@@ -22,6 +22,7 @@ import 'package:MyNews/widgets/ui_elements/settings_widgets/feedbackListTile.dar
 import 'package:MyNews/widgets/ui_elements/settings_widgets/time_search_menu.dart';
 import 'package:MyNews/widgets/ui_elements/settings_widgets/date_picker.dart';
 import 'package:MyNews/widgets/ui_elements/settings_widgets/restore_defaults_listTile.dart';
+import 'package:MyNews/widgets/ui_elements/settings_widgets/hidden_sources_listTile.dart';
 
 enum DateMode { FromDate, ToDate }
 
@@ -398,6 +399,10 @@ class _SettingsPageState extends State<SettingsPage>
                     height: 10,
                   ),
                   PrivateSessionWidget(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  HiddenSourcesListTile()
                 ]),
                 // Restore card
                 SettingsText('Restore'),

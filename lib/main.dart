@@ -11,6 +11,7 @@ import 'package:MyNews/pages/main/main_page.dart';
 import 'package:MyNews/pages/screens/custom_search.dart';
 import 'package:MyNews/pages/screens/search_page.dart';
 import 'package:MyNews/pages/screens/settings_page.dart';
+import 'package:MyNews/pages/screens/hidden_sources_page.dart';
 
 import 'package:MyNews/shared/adaptive_theme.dart';
 import 'package:MyNews/shared/dark_theme.dart';
@@ -82,6 +83,12 @@ class _MyAppState extends State<MyApp> {
         return PageTransition(
             child: CustomSearch(_model),
             type: PageTransitionType.fade,
+            duration: Duration(milliseconds: 150));
+        break;
+      case 'hidden_sources':
+        return PageTransition(
+            child: HiddenSourcesPage(),
+            type: PageTransitionType.rightToLeft,
             duration: Duration(milliseconds: 150));
         break;
       // default route

@@ -355,7 +355,7 @@ class _NewsCardState extends State<NewsCard>
             label: 'UNDO',
             onPressed: () {
               // remove hidden source from prefs
-              Prefs.removeLastHiddenSource(widget.model);
+              Prefs.removeHiddenSource(widget.model);
             }));
 
     Scaffold.of(context).showSnackBar(snackBar);
