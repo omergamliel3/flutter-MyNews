@@ -112,10 +112,13 @@ class Prefs {
   /// returns list of all hidden sources
   static List<String> getHiddenSources() {
     String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
-    List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
-    if (hiddenSources != null && hiddenSources.isNotEmpty) {
-      return hiddenSources;
+    if (rawSources != null && rawSources.isNotEmpty) {
+      List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
+      if (hiddenSources != null && hiddenSources.isNotEmpty) {
+        return hiddenSources;
+      }
     }
+
     return null;
   }
 
@@ -160,10 +163,14 @@ class Prefs {
       }
       // remove source from hiddenSources
       hiddenSources.remove(sourceToRemove);
+      if (hiddenSources.length == 0) {
+        _sharedPreferences.remove(_hiddenSourcePrefsKey);
+      } else {
+        // set updated hidden sources in prefs
+        _sharedPreferences.setString(
+            _hiddenSourcePrefsKey, hiddenSources.join(_sourcesSplitPattern));
+      }
 
-      // set updated hidden sources in prefs
-      _sharedPreferences.setString(
-          _hiddenSourcePrefsKey, hiddenSources.join(_sourcesSplitPattern));
       print('source to remove from hidden sources: $sourceToRemove');
       print('remove hidden sources');
       print(hiddenSources.join(', '));

@@ -904,7 +904,7 @@ class MainModel extends Model {
             DateTime.parse(localheadlinesNews[0].createdTime);
         Duration difference = DateTime.now().difference(createdTime);
         // if connectivity is true or difference smaller than 1 hour
-        if (difference.inMinutes < 1 || !connectivity) {
+        if (difference.inMinutes < 59 || !connectivity) {
           // set headlinesNewsList to the saved db data.
           _headlinesNewsList[i] = List.from(localheadlinesNews);
         }
@@ -924,7 +924,7 @@ class MainModel extends Model {
         DateTime createdTime = DateTime.parse(followingNews[0].createdTime);
         Duration difference = DateTime.now().difference(createdTime);
         // if connectivity is true or difference smaller than 1 hour
-        if (difference.inMinutes < 1 || !connectivity) {
+        if (difference.inMinutes < 59 || !connectivity) {
           // set local following news list to [followingNews]
           _newsList[i] = List.from(followingNews);
         }

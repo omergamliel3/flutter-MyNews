@@ -114,6 +114,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   // change pageBody widget to the given indexs
   void _changePage(int index) {
+    _scaffoldkey.currentState.removeCurrentSnackBar();
     MainModel model = widget.model;
     if (_pageIndex == 2) {
       model.callNotifyListeners();
