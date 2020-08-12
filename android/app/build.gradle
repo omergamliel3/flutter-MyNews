@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId "com.omergamliel.mynews"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 5
         versionName '0.9'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
