@@ -150,7 +150,7 @@ class Prefs {
   /// remove last source from hidden source prefs
   static void removeHiddenSource(MainModel model, [String source]) {
     String sourceToRemove;
-    model.restoreNewsDataSnapState();
+
     // get raw hidden sources string from prefs
     String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
     if (rawSources != null && rawSources.isNotEmpty) {
@@ -158,6 +158,8 @@ class Prefs {
       List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
       if (source == null) {
         sourceToRemove = hiddenSources.last;
+        // restore news data state only if restore last hidden source case
+        model.restoreNewsDataSnapState();
       } else {
         sourceToRemove = source;
       }

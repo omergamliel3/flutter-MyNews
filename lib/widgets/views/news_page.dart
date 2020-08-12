@@ -38,7 +38,7 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   // future value
   Future<Map<String, dynamic>> _future;
-  //ScrollController _scrollController;
+
   // Called when this object is inserted into the tree.
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _NewsPageState extends State<NewsPage> {
     if (widget.saveSearch) {
       _future = fetchNews(forceFetch: true);
     }
-    // _scrollController = ScrollController(keepScrollOffset: true);
+    // init global keys
     super.initState();
   }
 
@@ -214,34 +214,3 @@ class _NewsPageState extends State<NewsPage> {
       );
   }
 }
-
-// separatorBuilder: (context, index) {
-//   return Container();
-//   // dont show native ads in debug mode or index is not multiple of 7
-//   // if (Foundation.kDebugMode || index % 7 != 0) return Container();
-
-//   // return BannerAdWidget();
-// },
-// onRefresh indicatpr callback
-// Future<void> _onRefresh() async {
-//   Map<String, dynamic> info = await fetchNews(forceFetch: true);
-//   if (info['message'] == 'There is no internet connection') {
-//     //  show no connection Toast
-//     Fluttertoast.showToast(
-//       msg: 'There is no internet connection',
-//       toastLength: Toast.LENGTH_LONG,
-//       gravity: ToastGravity.BOTTOM,
-//     );
-//   }
-//   return Future.value(true);
-// }
-//  show no connection Toast
-// Fluttertoast.showToast(
-//   msg: 'There is no internet connection',
-//   toastLength: Toast.LENGTH_LONG,
-//   gravity: ToastGravity.BOTTOM,
-// );
-// call repeate check connectivity to fetch when device has connection
-
-// return loading widget
-//return _buildLoadingWidget();
