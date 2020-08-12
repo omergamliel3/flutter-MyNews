@@ -19,6 +19,7 @@ class _HiddenSourcesPageState extends State<HiddenSourcesPage> {
   GlobalKey<AnimatedListState> _listKey;
   GlobalKey<ScaffoldState> _scaffoldKey;
 
+  // Called when this object is inserted into the tree.
   @override
   void initState() {
     // get hidden sources from prefs service
@@ -112,7 +113,7 @@ class _HiddenSourcesPageState extends State<HiddenSourcesPage> {
   void _showSnackBar(String source, int index) {
     var snackBar = SnackBar(
         behavior: SnackBarBehavior.floating,
-        duration: Duration(milliseconds: 3000),
+        duration: Duration(milliseconds: 2500),
         content: Text(
           'Restore $source',
         ),
@@ -128,6 +129,7 @@ class _HiddenSourcesPageState extends State<HiddenSourcesPage> {
               }
             }));
 
+    _scaffoldKey.currentState.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 

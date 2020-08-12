@@ -86,12 +86,10 @@ class _NewsPageState extends State<NewsPage> {
   // hangle error method
   Widget _handleError(AsyncSnapshot<Map<String, dynamic>> snapshot) {
     // error cases
-
     // On There is no internet connection error
     if (snapshot.data['message'] == 'There is no internet connection') {
       repeateCheckConnectivity();
     }
-
     return _buildErrorWidget(snapshot.data['message']);
   }
 
@@ -155,24 +153,16 @@ class _NewsPageState extends State<NewsPage> {
       // if connectivity is true call fetchNews and cancel timer
       if (connectivity) {
         timer.cancel();
+        Fluttertoast.showToast(
+          msg: 'Internet connection restored',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+
         await fetchNews(forceFetch: true);
         if (mounted) setState(() {});
       }
     });
-  }
-
-  // handle page return, call when the page has been initilise before and re-build again on runtime
-  void handlePageReturn() async {
-    bool connectivity = await Connectivity.internetConnectivity();
-    if (!connectivity) {
-      //Fluttertoast.cancel();
-      //  show no connection Toast
-      Fluttertoast.showToast(
-        msg: 'There is no internet connection',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
-    }
   }
 
   @override
@@ -188,7 +178,6 @@ class _NewsPageState extends State<NewsPage> {
       newsList = widget.model.getNewsList[widget.index];
     }
     if (newsList.isNotEmpty) {
-      handlePageReturn();
       return _buildNewsCardListView();
     } else
       return FutureBuilder<Map<String, dynamic>>(

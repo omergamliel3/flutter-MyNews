@@ -100,14 +100,14 @@ class _LoadingScreenState extends State<LoadingScreen>
     // init app data (prefs and local)
     await widget._model.initAppData();
 
-    // init db
+    // init db service
     bool initDB = await DBservice.asyncInitDB();
     // close the app if failed to init db
     if (!initDB) {
       SystemNavigator.pop();
     }
 
-    // init prefs
+    // init prefs service
     Prefs.initPrefs();
 
     // fetch temp news data from db
@@ -117,11 +117,23 @@ class _LoadingScreenState extends State<LoadingScreen>
     // init admob serivce
     //AdMobHelper.initialiseAdMob();
 
+    // show no connectivity toast
+    if (!connectivity) {
+      Fluttertoast.showToast(
+        msg: 'There is no internet connection',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
+
+    // navigate main page
     Navigator.of(context).pushReplacementNamed('/main');
   }
 
   // handle no internet connection
   void _handleNoConnectivity() {
+    bool isDialogOpen = false;
+
     Fluttertoast.showToast(
       msg: 'Please connect your device to wifi network or mobile data',
       toastLength: Toast.LENGTH_LONG,
@@ -134,19 +146,32 @@ class _LoadingScreenState extends State<LoadingScreen>
       // if connectivity is true cancel timer and call runInitTasks
       if (connectivity) {
         runInitTasks();
+        // pop from dialog if open
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
         timer.cancel();
       }
 
       if (timer.tick > 5) {
-        // allow launch only if disableLocation value true or lastLocation is saved
+        // allow app launch only if disableLocation value true or lastLocation is saved
+        // otherwise the app is opened for the first time and must have connectivity
         bool locationDisable =
             widget._model.sharedPreferences.getBool('disableLocation') ?? false;
         bool locationSaved =
             widget._model.sharedPreferences.getString('lastLocation') != null;
+
+        // app launched before
         if (locationDisable || locationSaved) {
           // launch app with no internet
           runInitTasks(allowNoConnectivity: true);
           timer.cancel();
+        }
+        // app launch for the first time
+        else if (!isDialogOpen) {
+          // show dialog
+          isDialogOpen = true;
+          _showNoConnectivityDialog();
         }
       }
     });
@@ -164,14 +189,18 @@ class _LoadingScreenState extends State<LoadingScreen>
     bool location = false;
     bool dialogOpen = false;
     int timer = 0;
+
+    // invoke loop every 1 seconds until success fetch location
     while (!location) {
       await Future.delayed(Duration(seconds: 1));
       timer++;
 
+      // show dialog after 8 seconds
       if (timer > 8 && !dialogOpen) {
         dialogOpen = true;
-        showNoLocationDialog();
+        _showNoLocationDialog();
       }
+      // fetch location
       location = await widget._model.fetchLocation();
     }
     // pop from dialog if open
@@ -182,8 +211,45 @@ class _LoadingScreenState extends State<LoadingScreen>
     runInitTasks(skipLocation: true);
   }
 
+  // show no connectivity dialog
+  void _showNoConnectivityDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0)),
+            title: Text('No internet connection'),
+            content: Text(
+                'You must have internet connection when launch the app for the first time'),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: Theme.of(context).accentColor),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              FlatButton(
+                  child: Text(
+                    'WIRELESS SETTINGS',
+                    style: TextStyle(color: Theme.of(context).accentColor),
+                  ),
+                  onPressed: () {
+                    final AndroidIntent intent = new AndroidIntent(
+                      action: 'android.settings.WIRELESS_SETTINGS',
+                    );
+                    intent.launch();
+                    Navigator.of(context).pop();
+                  })
+            ],
+          );
+        });
+  }
+
   // show no location dialog
-  void showNoLocationDialog() {
+  void _showNoLocationDialog() {
     showDialog(
         context: context,
         builder: (context) {

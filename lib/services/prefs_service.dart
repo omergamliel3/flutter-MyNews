@@ -99,6 +99,7 @@ class Prefs {
   static bool isSourceHidden(String source) {
     // get raw hidden sources string from prefs
     String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
+    // safety check
     if (rawSources != null && rawSources.isNotEmpty) {
       // split raw hidden sources to strings list
       List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
@@ -111,14 +112,17 @@ class Prefs {
 
   /// returns list of all hidden sources
   static List<String> getHiddenSources() {
+    // get raw hidden sources string from prefs
     String rawSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
+    // safety check
     if (rawSources != null && rawSources.isNotEmpty) {
+      // split rawSources to Strings list
       List<String> hiddenSources = rawSources.split(_sourcesSplitPattern);
       if (hiddenSources != null && hiddenSources.isNotEmpty) {
         return hiddenSources;
       }
     }
-
+    // return null if rawSources is empty or null
     return null;
   }
 
@@ -128,6 +132,7 @@ class Prefs {
     model.removeHiddenSources(source);
     // get raw hidden sources string from prefs
     String hiddenSources = _sharedPreferences.getString(_hiddenSourcePrefsKey);
+    // safety check
     if (hiddenSources == null || hiddenSources.isEmpty) {
       hiddenSources = source;
     } else {
@@ -139,10 +144,6 @@ class Prefs {
       }
       hiddenSources += '$_sourcesSplitPattern$source';
     }
-
-    print('add hidden source');
-    print('source to hide: $source');
-    print('Hidden sources:\n$hiddenSources');
     // set updated hidden sources in prefs
     _sharedPreferences.setString(_hiddenSourcePrefsKey, hiddenSources);
   }
@@ -172,10 +173,6 @@ class Prefs {
         _sharedPreferences.setString(
             _hiddenSourcePrefsKey, hiddenSources.join(_sourcesSplitPattern));
       }
-
-      print('source to remove from hidden sources: $sourceToRemove');
-      print('remove hidden sources');
-      print(hiddenSources.join(', '));
     }
   }
 }

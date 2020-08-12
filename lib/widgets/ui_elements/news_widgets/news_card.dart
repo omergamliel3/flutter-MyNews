@@ -148,6 +148,18 @@ class _NewsCardState extends State<NewsCard>
     double targetHeight = deviceHeight * targetHeightFactor;
     double targetWidth = deviceWidth * targetWidthFactor;
 
+    if (widget.news.urlToImage == placeHolderAsset) {
+      return Container(
+          padding: EdgeInsets.zero,
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.asset(
+                placeHolderAsset,
+                height: targetHeight,
+                width: targetWidth,
+                fit: BoxFit.cover,
+              )));
+    }
     return Container(
         padding: EdgeInsets.zero,
         child: ClipRRect(
@@ -357,7 +369,7 @@ class _NewsCardState extends State<NewsCard>
               // remove hidden source from prefs
               Prefs.removeHiddenSource(widget.model);
             }));
-
+    Scaffold.of(context).removeCurrentSnackBar();
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
