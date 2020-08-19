@@ -184,6 +184,7 @@ class _NewsCardState extends State<NewsCard>
 
   // build PopupMenuButton widget method
   PopupMenuButton _buildPopupMenuButton() {
+    bool isSourcePrioritize = Prefs.isSourcePrioritize(widget.news.source);
     return PopupMenuButton(
       tooltip: 'More',
       icon: Icon(Icons.more_vert),
@@ -196,9 +197,9 @@ class _NewsCardState extends State<NewsCard>
               fit: BoxFit.fitWidth,
               child: Row(
                 children: <Widget>[
-                  Icon(Icons.web),
+                  Icon(Icons.launch),
                   SizedBox(width: 10.0),
-                  Text('Full article')
+                  Text('Go to ${widget.news.source}')
                 ],
               ),
             )),
@@ -208,9 +209,9 @@ class _NewsCardState extends State<NewsCard>
               fit: BoxFit.fitWidth,
               child: Row(
                 children: <Widget>[
-                  Icon(Icons.launch),
+                  Icon(Icons.remove_circle),
                   SizedBox(width: 10.0),
-                  Text('Go to ${widget.news.source}')
+                  Text('Hide articles from ${widget.news.source}')
                 ],
               ),
             )),
@@ -220,9 +221,11 @@ class _NewsCardState extends State<NewsCard>
               fit: BoxFit.fitWidth,
               child: Row(
                 children: <Widget>[
-                  Icon(Icons.remove_circle),
+                  Icon(Icons.priority_high),
                   SizedBox(width: 10.0),
-                  Text('Hide articles from ${widget.news.source}')
+                  Text(isSourcePrioritize
+                      ? 'Unprioritize' + ' articles from ${widget.news.source}'
+                      : 'Prioritize' + ' articles from ${widget.news.source}')
                 ],
               ),
             )),
@@ -242,17 +245,27 @@ class _NewsCardState extends State<NewsCard>
       ],
       onSelected: (index) {
         if (index == 0) {
-          // launch news url in WebView
-          _openInWebView(widget.news.url, widget.news.title);
-        } else if (index == 1) {
           String sourceUrl =
               widget.news.url.substring(0, widget.news.url.indexOf('/', 10));
           _openInWebView(sourceUrl, widget.news.source);
-        } else if (index == 2) {
+        } else if (index == 1) {
           // add hideen source to prefs
           Prefs.addHiddenSource(widget.news.source, widget.model);
           // show snackbar
-          _showSnackBar();
+          _showHiddenSourcesSnackBar();
+        } else if (index == 2) {
+          if (isSourcePrioritize) {
+            Prefs.unPrioritizeSource(widget.news.source);
+          } else {
+            Prefs.prioritizeSource(widget.news.source);
+          }
+          // show snackbar
+          _showPrioritizeSourcesSnackBar(
+              widget.news.source, isSourcePrioritize);
+          // notify ui change
+          setState(() {
+            isSourcePrioritize = !isSourcePrioritize;
+          });
         } else if (index == 3) {
           // convert widget to image and share via email
           convertWidgetToImage();
@@ -355,8 +368,8 @@ class _NewsCardState extends State<NewsCard>
     }
   }
 
-  // show snack bar method
-  void _showSnackBar() {
+  // show hidden sources snack bar method
+  void _showHiddenSourcesSnackBar() {
     var snackBar = SnackBar(
         behavior: SnackBarBehavior.floating,
         duration: Duration(milliseconds: 3000),
@@ -370,6 +383,24 @@ class _NewsCardState extends State<NewsCard>
               Prefs.removeHiddenSource(widget.model);
             }));
     Scaffold.of(context).removeCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  // show prioritize sources snack bar method
+  void _showPrioritizeSourcesSnackBar(String source, bool isSourcePrioritize) {
+    var snackBar = SnackBar(
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(milliseconds: 3000),
+      content: Text(
+        isSourcePrioritize
+            ? '$source has been un-prioritize'
+            : '$source has been prioritize',
+      ),
+    );
+
+    // remove current snackbar if exits
+    Scaffold.of(context).removeCurrentSnackBar();
+    // show snackbar
     Scaffold.of(context).showSnackBar(snackBar);
   }
 

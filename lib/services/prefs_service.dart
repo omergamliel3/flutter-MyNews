@@ -11,6 +11,7 @@ class Prefs {
   static SharedPreferences _sharedPreferences;
   static const String _sourcesSplitPattern = '\n';
   static const String _hiddenSourcePrefsKey = 'HiddenSources';
+  static const String _prioritizeSourcesPrefsKey = 'PrioritizeScources';
 
   /// init prefs
   static Future<void> initPrefs() async {
@@ -128,6 +129,8 @@ class Prefs {
 
   /// add source to hidden sources prefs
   static void addHiddenSource(String source, MainModel model) {
+    // [source] safety check
+    if (source == null || source.isEmpty) return;
     // remove hidden source news data from model
     model.removeHiddenSources(source);
     // get raw hidden sources string from prefs
@@ -144,6 +147,8 @@ class Prefs {
       }
       hiddenSources += '$_sourcesSplitPattern$source';
     }
+    // remove source from prioritize sources if exists
+    unPrioritizeSource(source);
     // set updated hidden sources in prefs
     _sharedPreferences.setString(_hiddenSourcePrefsKey, hiddenSources);
   }
@@ -174,5 +179,71 @@ class Prefs {
             _hiddenSourcePrefsKey, hiddenSources.join(_sourcesSplitPattern));
       }
     }
+  }
+
+  /// add source to prioritizes list
+  static void prioritizeSource(String source) {
+    // [source] safety check
+    if (source == null || source.isEmpty) return;
+    // get raw prioritize sources string from prefs
+    String rawStr = _sharedPreferences.getString(_prioritizeSourcesPrefsKey);
+    String prioritize;
+    if (rawStr == null || rawStr.isEmpty) {
+      prioritize = source;
+    } else {
+      // split rawStr to List prioritize sources
+      List<String> prioritizeSources = rawStr.split(_sourcesSplitPattern);
+      // stops method if prioritizeSources contains [soource]
+      if (prioritizeSources.contains(source)) {
+        return;
+      }
+      // concatenation updated prioritize sources
+      prioritize = rawStr + _sourcesSplitPattern + source;
+    }
+    // save updated prioritize sources in prefs
+    _sharedPreferences.setString(_prioritizeSourcesPrefsKey, prioritize);
+  }
+
+  /// remove source from prioritizes list
+  static void unPrioritizeSource(String source) {
+    // [source] safety check
+    if (source == null || source.isEmpty) return;
+    // get raw prioritize sources string from prefs
+    String rawStr = _sharedPreferences.getString(_prioritizeSourcesPrefsKey);
+    if (rawStr == null || rawStr.isEmpty) return;
+    // split rawStr to List prioritize sources
+    List<String> prioritizeSources = rawStr.split(_sourcesSplitPattern);
+    if (prioritizeSources.contains(source)) {
+      // remove source from prioritize sources
+      prioritizeSources.remove(source);
+      // save updated prioritize sources in prefs
+      _sharedPreferences.setString(_prioritizeSourcesPrefsKey,
+          prioritizeSources.join(_sourcesSplitPattern));
+    }
+  }
+
+  /// returns [true/false] whatever source is prioritize
+  static bool isSourcePrioritize(String source) {
+    // [source] safety check
+    if (source == null || source.isEmpty) return false;
+    // get raw prioritize sources string from prefs
+    String rawStr = _sharedPreferences.getString(_prioritizeSourcesPrefsKey);
+    // null and empty check
+    if (rawStr == null || rawStr.isEmpty) {
+      return false;
+    }
+    List<String> prioritizeSources = rawStr.split(_sourcesSplitPattern);
+    return prioritizeSources.contains(source);
+  }
+
+  /// returns [true/false] whatever pioritize sources
+  static bool isPioritizeSourcesEmpty() {
+    // get raw prioritize sources string from prefs
+    String rawStr = _sharedPreferences.getString(_prioritizeSourcesPrefsKey);
+    // null and empty check
+    if (rawStr == null || rawStr.isEmpty) {
+      return true;
+    }
+    return false;
   }
 }

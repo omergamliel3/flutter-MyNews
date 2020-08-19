@@ -500,6 +500,8 @@ class MainModel extends Model {
     setSavedSearchNewsTitle('');
     _searchNews.clear();
     _newsList.clear();
+    _headlinesNewsList[0].clear();
+    _headlinesNewsList[1].clear();
     _followingTopicsList.clear();
     setSearchDateMode(SearchDateMode.Default);
     await DBservice.deleteDB();
@@ -662,6 +664,27 @@ class MainModel extends Model {
       }
 
       if (addArticle) fetchedNewsList.add(news);
+    }
+
+    // sort prioritize sources if not empty
+    if (!Prefs.isPioritizeSourcesEmpty()) {
+      List<News> prioritizeNewsList = [];
+      // iterate fetchedNewsList
+      for (var i = 0; i < fetchedNewsList.length; i++) {
+        // add element if source is prioritize
+        if (Prefs.isSourcePrioritize(fetchedNewsList[i].source)) {
+          // remove element from fetchedNewsList
+          News news = fetchedNewsList.removeAt(i);
+          // add element to prioritizeNewsList
+          prioritizeNewsList.add(news);
+        }
+      }
+      // add the remaining elements from fetchedNewsList
+      prioritizeNewsList.addAll(fetchedNewsList);
+      // clear fetchedNewsList
+      fetchedNewsList.clear();
+      // add all elements from prioritizeNewsList
+      fetchedNewsList.addAll(prioritizeNewsList);
     }
 
     // search page case
