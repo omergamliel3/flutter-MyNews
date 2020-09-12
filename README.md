@@ -4,12 +4,6 @@
 
 A fully customize & personalize news app, built with Flutter SDK.
 
-# Download the app!
-
-<a href='https://play.google.com/store/apps/details?id=com.omergamliel.mynews'>
-  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/>
-</a>
-
 ## Screenshots
 
 <img src="screenshots/Screenshot_1.png" width="240px" />
@@ -30,14 +24,15 @@ A fully customize & personalize news app, built with Flutter SDK.
 
 ### Back-end
 
-- Node.js + Express
-- MongoDB
-- Socket.IO for real-time communication during gameplay
-- A lyric scraping service with multiple sources
+-  **News API** - [NewsAPI](https://newsapi.org/)
 
 # Authors 🙋
 
 -   **Omer Gamliel** - [LinkedIn](https://www.linkedin.com/in/omer-gamliel-6a813a188/)
 
 
+# Download the app!
 
+<a href='https://play.google.com/store/apps/details?id=com.omergamliel.mynews'>
+  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/>
+</a>
