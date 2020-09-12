@@ -19,19 +19,19 @@ A fully customize & personalize news app.
 
 ### Front-end
 
-- Flutter SDK
-- ScopedModel for state management
+- **Flutter SDK**
+- **ScopedModel for state management**
+
+### Storage
+
+ - **SQLite**
+ - **Shared preferences**
 
 ### Back-end
 
 - **Firebase**
--  **News API** - [NewsAPI](https://newsapi.org/)
+-  **News API** - [newsapi.org](https://newsapi.org/)
 
 # Authors 🙋
 
 -   **Omer Gamliel** - [LinkedIn](https://www.linkedin.com/in/omer-gamliel-6a813a188/)
-
-
-## Download the app!
-
-
