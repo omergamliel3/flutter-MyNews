@@ -1,14 +1,12 @@
-# MyNews 
-
-<img src="Assets/Images/app-icon.png" width="100px" />
+# MyNews <img src="Assets/Images/app-icon.png" width="100px" align = center />
 
 A fully customize & personalize news app, built with Flutter SDK.
 
 ## Screenshots
 
 <img src="screenshots/Screenshot_1.png" width="240px" align = left />
-<img src="screenshots/Screenshot_2.png" width="240px" />
-<img src="screenshots/Screenshot_3.png" width="240px" />
+<img src="screenshots/Screenshot_2.png" width="240px" align = center />
+<img src="screenshots/Screenshot_3.png" width="240px" align = right/>
 <img src="screenshots/Screenshot_4.png" width="240px" />
 <img src="screenshots/Screenshot_5.png" width="240px" />
 <img src="screenshots/Screenshot_6.png" width="240px" />
