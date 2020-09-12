@@ -1,8 +1,14 @@
 # MyNews
 
-![App Screenshot](./screenshots/Phone Screenshot 1.jpg)
 
-![App Screenshot1](./screenshots/Phone Screenshot 1.jpg)
+## Screenshots
+
+<img src="screenshots/Phone Screenshot 1.jpg.png" width="240px" />
+<img src="screenshots/Phone Screenshot 2.jpg.png" width="240px" />
+<img src="screenshots/Phone Screenshot 3.jpg.png" width="240px" />
+<img src="screenshots/Phone Screenshot 4.jpg.png" width="240px" />
+<img src="screenshots/Phone Screenshot 5.jpg.png" width="240px" />
+<img src="screenshots/Phone Screenshot 6.jpg.png" width="240px" />
 
 # Introduction
 
