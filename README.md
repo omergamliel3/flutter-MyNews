@@ -4,12 +4,12 @@ A fully customize & personalize news app, built with Flutter SDK.
 
 ## Screenshots
 
-<img src="screenshots/Phone Screenshot 1.jpg.png" width="240px" />
-<img src="screenshots/Phone Screenshot 2.jpg.png" width="240px" />
-<img src="screenshots/Phone Screenshot 3.jpg.png" width="240px" />
-<img src="screenshots/Phone Screenshot 4.jpg.png" width="240px" />
-<img src="screenshots/Phone Screenshot 5.jpg.png" width="240px" />
-<img src="screenshots/Phone Screenshot 6.jpg.png" width="240px" />
+<img src="screenshots/Screenshot_1.png" width="240px" />
+<img src="screenshots/Screenshot_2.png" width="240px" />
+<img src="screenshots/Screenshot_3.png" width="240px" />
+<img src="screenshots/Screenshot_4.png" width="240px" />
+<img src="screenshots/Screenshot_5.png" width="240px" />
+<img src="screenshots/Screenshot_6.png" width="240px" />
 
 
 
