@@ -6,7 +6,7 @@ A fully customize & personalize news app, built with Flutter SDK.
 
 ## Screenshots
 
-<img src="screenshots/Screenshot_1.png" width="240px" />
+<img src="screenshots/Screenshot_1.png" width="240px" align = left />
 <img src="screenshots/Screenshot_2.png" width="240px" />
 <img src="screenshots/Screenshot_3.png" width="240px" />
 <img src="screenshots/Screenshot_4.png" width="240px" />
@@ -17,13 +17,12 @@ A fully customize & personalize news app, built with Flutter SDK.
 
 ### Front-end
 
-- React (with hooks)
-- Redux for state management (with the official Redux Toolkit)
-- Feature-first architecture design, and a React pattern of presentational components vs containers for better seperation of concerns.
-- Socket.IO client side
+- Flutter SDK
+- ScopedModel for state management
 
 ### Back-end
 
+- **Firebase**
 -  **News API** - [NewsAPI](https://newsapi.org/)
 
 # Authors 🙋
