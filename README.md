@@ -1,4 +1,4 @@
-# MyNews
+# MyNews <img src="Assets/Images/app-icon.png" width="50px" />
 
 A fully customize & personalize news app, built with Flutter SDK.
 
