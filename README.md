@@ -1,6 +1,14 @@
-# MyNews <img src="Assets/Images/app-icon.png" width="70px" />
+# MyNews 
+
+<img src="Assets/Images/app-icon.png" width="100px" />
 
 A fully customize & personalize news app, built with Flutter SDK.
+
+# Download the app!
+
+<a href='https://play.google.com/store/apps/details?id=com.omergamliel.mynews'>
+  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/>
+</a>
 
 ## Screenshots
 
@@ -31,8 +39,5 @@ A fully customize & personalize news app, built with Flutter SDK.
 
 -   **Omer Gamliel** - [LinkedIn](https://www.linkedin.com/in/omer-gamliel-6a813a188/)
 
-<a href='https://play.google.com/store/apps/details?id=com.omergamliel.mynews'>
-  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/>
-</a>
 
 
