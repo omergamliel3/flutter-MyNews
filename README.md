@@ -30,6 +30,7 @@ A fully customize & personalize news app.
 ### Back-end
 
 - **Firebase**
+- **Google Geolocation**
 -  **News API** - [newsapi.org](https://newsapi.org/)
 
 # Author 🙋
