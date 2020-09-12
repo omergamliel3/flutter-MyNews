@@ -32,6 +32,6 @@ A fully customize & personalize news app.
 - **Firebase**
 -  **News API** - [newsapi.org](https://newsapi.org/)
 
-# Authors 🙋
+# Author 🙋
 
 -   **Omer Gamliel** - [LinkedIn](https://www.linkedin.com/in/omer-gamliel-6a813a188/)
