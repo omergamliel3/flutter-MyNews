@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
+import 'package:flutter/services.dart' as services;
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:scoped_model/scoped_model.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'package:MyNews/scoped-models/main.dart';
@@ -19,7 +20,8 @@ import 'package:MyNews/shared/global_values.dart';
 
 void main() {
   // Main Function
-  runApp(MyApp());
+  runApp(DevicePreview(
+      enabled: !foundation.kReleaseMode, builder: (context) => MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -35,8 +37,10 @@ class _MyAppState extends State<MyApp> {
   // Called when this object is inserted into the tree.
   @override
   void initState() {
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    services.SystemChrome.setPreferredOrientations([
+      services.DeviceOrientation.portraitUp,
+      services.DeviceOrientation.portraitDown
+    ]);
     // init theme data
     future = _model.initThemeData();
     super.initState();
@@ -119,36 +123,30 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
-    // builds the application after the future completes
     return FutureBuilder<void>(
         future: future,
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            // if async has error display error text widget
             if (snapshot.hasError) {
               _handleSnapshotError(snapshot);
             }
-            // return the MeterialApp wraps with scoped model widget
             return ScopedModel<MainModel>(
-                // the scoped model instance attached to the app widget
                 model: _model,
                 child: MaterialApp(
                   title: appName,
+                  locale: DevicePreview.of(context).locale,
+                  builder: DevicePreview.appBuilder,
                   theme: getAndroidThemeData(_model.selectedAccentColorIndex),
                   darkTheme: darkThemeData(_model.selectedAccentColorIndex),
-                  // themeMode according to the _model.isDark value
                   themeMode: _model.isDark ? ThemeMode.dark : ThemeMode.light,
-                  // routes
                   routes: {
                     '/': (BuildContext context) => LoadingScreen(_model),
                     '/main': (BuildContext context) =>
                         MainPage(_model, changeState)
                   },
                   onGenerateRoute: _routes,
-                  // On Unknown Route / Routes error
                   onUnknownRoute: _unknownRoute,
                   debugShowCheckedModeBanner: false,
                 ));
