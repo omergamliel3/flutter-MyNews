@@ -67,7 +67,91 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   // Animated bottomNavigationBar
   Widget _buildBottomNavigationBar() {
     final bool isDark = MainModel.of(context).isDark;
-    return AnimatedContainer(
+    return WillPopScope(
+      onWillPop: showModalBottomSheet(context: context, builder: (context){
+      return Container(
+        decoration: BoxDecoration(
+            color: Color(0xff737373)
+        ),
+        height: 100,
+        width: double.infinity,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
+          child: Container(
+            height: 100,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)
+                ),
+                color: Colors.white
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(22, 20, 10, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Text("Do you really want to exit?",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.none
+                    ),
+                  ),
+                  SizedBox(height: 5,),
+                  Row(
+                    children: [
+                      SizedBox(width: 5,),
+                      FlatButton(
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        ),
+                        color: Colors.black,
+                        splashColor: Colors.yellowAccent,
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              letterSpacing: 1
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 25,),
+                      FlatButton(
+                        onPressed: (){
+                          exit(0);
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        ),
+                        color: Colors.white30,
+                        splashColor: Colors.yellowAccent,
+                        child: Text(
+                          "Yes",
+                          style: TextStyle(
+                              fontSize: 18,
+                              letterSpacing: 1,
+                              color: Colors.black
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    } ),
+      child: AnimatedContainer(
       duration: Duration(milliseconds: 300),
       height: _isVisible ? 56.0 : 0.0,
       child: Wrap(
@@ -97,6 +181,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           )
         ],
       ),
+    )
     );
   }
 
