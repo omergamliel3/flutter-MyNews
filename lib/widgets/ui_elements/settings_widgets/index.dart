@@ -1,0 +1,14 @@
+export 'package:MyNews/widgets/ui_elements/settings_widgets/color_picker.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/settings_text.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/country_text.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/update_location.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/disable_location_listTile.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/app_info_widget.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/delete_search_widget.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/private_session_widget.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/change_theme_widget.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/feedbackListTile.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/time_search_menu.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/date_picker.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/restore_defaults_listTile.dart';
+export 'package:MyNews/widgets/ui_elements/settings_widgets/hidden_sources_listTile.dart';

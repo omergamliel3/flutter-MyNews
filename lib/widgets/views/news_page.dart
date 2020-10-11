@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-//import 'package:flutter/foundation.dart' as Foundation;
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,7 +11,6 @@ import 'package:MyNews/services/custom_services.dart';
 
 import 'package:MyNews/widgets/ui_elements/global_widgets/loading_shader_mask.dart';
 import 'package:MyNews/widgets/ui_elements/news_widgets/news_card.dart';
-//import 'package:MyNews/widgets/ui_elements/global_widgets/BannerAd.dart';
 
 class NewsPage extends StatefulWidget {
   // Class Attributes

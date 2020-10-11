@@ -13,9 +13,7 @@ import 'package:MyNews/models/news.dart';
 import 'package:MyNews/helpers/custom_extentions.dart';
 import 'package:MyNews/shared/global_values.dart';
 
-import 'package:MyNews/services/custom_services.dart';
-import 'package:MyNews/services/db_service.dart';
-import 'package:MyNews/services/url_helper.dart';
+import 'package:MyNews/services/index.dart';
 
 enum SearchDateMode { Default, Custom, Week, Month }
 

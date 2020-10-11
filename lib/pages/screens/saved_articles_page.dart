@@ -9,11 +9,7 @@ import 'package:MyNews/services/db_service.dart';
 import 'package:MyNews/scoped-models/main.dart';
 import 'package:MyNews/models/article.dart';
 
-import 'package:MyNews/widgets/ui_elements/global_widgets/app_bar_title.dart';
-import 'package:MyNews/widgets/ui_elements/saved_articles_widgets/empty_page.dart';
-import 'package:MyNews/widgets/ui_elements/saved_articles_widgets/saved_article_listTile.dart';
-import 'package:MyNews/widgets/ui_elements/saved_articles_widgets/slide_left_background.dart';
-import 'package:MyNews/widgets/ui_elements/saved_articles_widgets/slide_right_background.dart';
+import '../../widgets/ui_elements/saved_articles_widgets/index.dart';
 
 class SavedArticlesPage extends StatefulWidget {
   // Class Attributes

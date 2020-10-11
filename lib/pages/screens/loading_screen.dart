@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:MyNews/services/prefs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' as scheduler;
 import 'package:flutter/services.dart';
@@ -10,10 +9,10 @@ import 'package:android_intent/android_intent.dart';
 
 import 'package:MyNews/scoped-models/main.dart';
 
+import 'package:MyNews/services/prefs_service.dart';
 import 'package:MyNews/services/custom_services.dart';
 import 'package:MyNews/services/db_service.dart';
 import 'package:MyNews/services/notifications_service.dart';
-//import 'package:MyNews/services/admob_service.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override

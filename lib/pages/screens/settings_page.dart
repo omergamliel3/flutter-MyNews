@@ -8,21 +8,7 @@ import 'package:MyNews/widgets/dialogs/add_categorie_dialog.dart';
 import 'package:MyNews/widgets/dialogs/remove_dialog.dart';
 
 import 'package:MyNews/widgets/ui_elements/global_widgets/app_bar_title.dart';
-
-import 'package:MyNews/widgets/ui_elements/settings_widgets/color_picker.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/settings_text.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/country_text.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/update_location.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/disable_location_listTile.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/app_info_widget.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/delete_search_widget.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/private_session_widget.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/change_theme_widget.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/feedbackListTile.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/time_search_menu.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/date_picker.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/restore_defaults_listTile.dart';
-import 'package:MyNews/widgets/ui_elements/settings_widgets/hidden_sources_listTile.dart';
+import 'package:MyNews/widgets/ui_elements/settings_widgets/index.dart';
 
 enum DateMode { FromDate, ToDate }
 

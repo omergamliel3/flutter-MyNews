@@ -5,7 +5,6 @@ import 'package:MyNews/scoped-models/main.dart';
 import 'package:MyNews/pages/screens/following_page.dart';
 import 'package:MyNews/pages/screens/headlines_page.dart';
 import 'package:MyNews/pages/screens/saved_articles_page.dart';
-//import 'package:MyNews/pages/test/playground.dart';
 
 import 'package:MyNews/widgets/dialogs/welcome_dialog.dart';
 
@@ -13,9 +12,8 @@ import 'package:MyNews/services/prefs_service.dart';
 
 class MainPage extends StatefulWidget {
   final MainModel model;
-  final Function changeState;
 
-  MainPage(this.model, this.changeState);
+  MainPage(this.model);
 
   @override // create state
   _MainPageState createState() => _MainPageState();
