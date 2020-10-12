@@ -18,17 +18,14 @@ class LoadingScreen extends StatefulWidget {
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 
-  final MainModel _model;
-
-  LoadingScreen(this._model);
+  LoadingScreen();
 }
 
 class _LoadingScreenState extends State<LoadingScreen>
     with TickerProviderStateMixin {
   AnimationController _logoAnimationController;
   Animation _logoAnimation;
-  //bool _isDialogOpen = false;
-
+  MainModel model;
   @override
   void initState() {
     // set the logo animation controller
@@ -70,6 +67,12 @@ class _LoadingScreenState extends State<LoadingScreen>
     super.dispose();
   }
 
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    model = MainModel.of(context);
+  }
+
   /// This method calls the initializers and once they complete redirects to main page
   Future runInitTasks(
       {bool allowNoConnectivity = false, bool skipLocation = false}) async {
@@ -85,7 +88,7 @@ class _LoadingScreenState extends State<LoadingScreen>
 
     if (!skipLocation) {
       // get device location / last location
-      bool location = await widget._model.fetchLocation();
+      bool location = await model.fetchLocation();
       // handle no location
       if (!location) {
         _handleNoLocation();
@@ -97,7 +100,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     Notifications.initNotifications();
 
     // init app data (prefs and local)
-    await widget._model.initAppData();
+    await model.initAppData();
 
     // init db service
     bool initDB = await DBservice.asyncInitDB();
@@ -110,8 +113,8 @@ class _LoadingScreenState extends State<LoadingScreen>
     Prefs.initPrefs();
 
     // fetch temp news data from db
-    await widget._model.fetchHeadlinesData(connectivity);
-    await widget._model.fetchFollowingData(connectivity);
+    await model.fetchHeadlinesData(connectivity);
+    await model.fetchFollowingData(connectivity);
 
     // init admob serivce
     //AdMobHelper.initialiseAdMob();
@@ -156,9 +159,9 @@ class _LoadingScreenState extends State<LoadingScreen>
         // allow app launch only if disableLocation value true or lastLocation is saved
         // otherwise the app is opened for the first time and must have connectivity
         bool locationDisable =
-            widget._model.sharedPreferences.getBool('disableLocation') ?? false;
+            model.sharedPreferences.getBool('disableLocation') ?? false;
         bool locationSaved =
-            widget._model.sharedPreferences.getString('lastLocation') != null;
+            model.sharedPreferences.getString('lastLocation') != null;
 
         // app launched before
         if (locationDisable || locationSaved) {
@@ -200,7 +203,7 @@ class _LoadingScreenState extends State<LoadingScreen>
         _showNoLocationDialog();
       }
       // fetch location
-      location = await widget._model.fetchLocation();
+      location = await model.fetchLocation();
     }
     // pop from dialog if open
     if (Navigator.canPop(context)) {
@@ -294,7 +297,7 @@ class _LoadingScreenState extends State<LoadingScreen>
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                  color: widget._model.isDark ? Colors.black : Colors.white),
+                  color: model.isDark ? Colors.black : Colors.white),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,

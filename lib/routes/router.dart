@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:page_transition/page_transition.dart';
 import 'package:MyNews/pages/screens/index.dart';
-import 'package:MyNews/scoped-models/main.dart';
 
 class Router {
   final Function _changeState;
-  MainModel _model;
   Router(this._changeState);
 
   // dynamic routes
@@ -15,20 +13,20 @@ class Router {
       // loading route
       case '/':
         return PageTransition(
-            child: LoadingScreen(_model),
+            child: LoadingScreen(),
             type: PageTransitionType.fade,
             duration: Duration(milliseconds: 50));
         break;
       // main route
       case '/main':
         return PageTransition(
-            child: MainPage(_model),
+            child: MainPage(),
             type: PageTransitionType.fade,
             duration: Duration(milliseconds: 150));
       // settings route
       case '/settings':
         return PageTransition(
-            child: SettingsPage(_model, _changeState),
+            child: SettingsPage(_changeState),
             type: PageTransitionType.rightToLeft,
             duration: Duration(milliseconds: 150));
         break;
@@ -36,18 +34,15 @@ class Router {
       case '/search':
         String search;
         search = settings.name.split('/')[2].toString();
-        int prevPageIndex = _model.pageIndex;
-        // set page index to search page index
-        //_model.setPageIndex(pageIndexMap['Search']);
         return PageTransition(
-            child: SearchPage(search, _model, prevPageIndex),
+            child: SearchPage(search),
             type: PageTransitionType.fade,
             duration: Duration(milliseconds: 150));
         break;
       // custom search route
       case '/custom_search':
         return PageTransition(
-            child: CustomSearch(_model),
+            child: CustomSearch(),
             type: PageTransitionType.fade,
             duration: Duration(milliseconds: 150));
         break;
@@ -59,8 +54,7 @@ class Router {
         break;
       // default route
       default:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => MainPage(_model));
+        return MaterialPageRoute(builder: (BuildContext context) => MainPage());
     }
   }
 }

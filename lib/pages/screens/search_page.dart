@@ -9,10 +9,8 @@ import 'package:MyNews/widgets/ui_elements/global_widgets/app_bar_title.dart';
 class SearchPage extends StatelessWidget {
   // Class Attributes
   final String title;
-  final MainModel model;
-  final int prevIndexPage;
   // SearchPage Constructor
-  SearchPage(this.title, this.model, this.prevIndexPage);
+  SearchPage(this.title);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,7 @@ class SearchPage extends StatelessWidget {
           child: WillPopScope(
             onWillPop: () {
               // set page index back to prev index page
-              model.setPageIndex(prevIndexPage);
+              //model.setPageIndex(prevIndexPage);
               return Future.value(true);
             },
             child: Scaffold(

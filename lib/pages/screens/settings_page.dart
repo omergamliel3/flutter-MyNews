@@ -17,12 +17,11 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 
   // Class Attributes
-  final MainModel model;
   final Function changeState;
   //final Function navigateHomePage;
 
   // Constructor
-  SettingsPage(this.model, this.changeState);
+  SettingsPage(this.changeState);
 }
 
 class _SettingsPageState extends State<SettingsPage>
@@ -39,13 +38,15 @@ class _SettingsPageState extends State<SettingsPage>
   // expanded list
   List<bool> _expandedList;
 
+  MainModel model;
+
   // Called when this object is inserted into the tree.
   @override
   void initState() {
     // revrieve date times from model
     _expandedList = [];
 
-    int navBarLength = widget.model.getfollowingTopicsList.length;
+    int navBarLength = model.getfollowingTopicsList.length;
     // Generate FocusNode List with the given ButtonNavBarList length
     _formFieldfocusNodeList = List.generate(navBarLength, (index) {
       return FocusNode();
@@ -57,8 +58,7 @@ class _SettingsPageState extends State<SettingsPage>
     });
 
     for (var i = 0; i < _textEditingControllerList.length; i++) {
-      _textEditingControllerList[i].text =
-          widget.model.getfollowingTopicsList[i];
+      _textEditingControllerList[i].text = model.getfollowingTopicsList[i];
     }
 
     // set state when focus is changed to change the style color
@@ -82,6 +82,12 @@ class _SettingsPageState extends State<SettingsPage>
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    model = MainModel.of(context);
+    super.didChangeDependencies();
+  }
+
   // UnFocusScope Method, creates a new FocusNode
   void _unFocusScope() {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -90,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage>
   // following TextFormField method
   Widget _buildFollowingTextField(int index) {
     FocusNode focusNode = _formFieldfocusNodeList[index];
-    Color dynamicColor = widget.model.isDark ? Colors.grey : Colors.black;
+    Color dynamicColor = model.isDark ? Colors.grey : Colors.black;
 
     // TextFormField Widget
     return Column(
@@ -141,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage>
           alignment: Alignment.centerRight,
           child:
               Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-            widget.model.getfollowingTopicsList.length == 2
+            model.getfollowingTopicsList.length == 2
                 ? Container()
                 : FlatButton(
                     onPressed: () {
@@ -155,8 +161,7 @@ class _SettingsPageState extends State<SettingsPage>
             FlatButton(
                 onPressed: () {
                   // submit form if text value is changed
-                  String strButtonNavBar =
-                      widget.model.getfollowingTopicsList[index];
+                  String strButtonNavBar = model.getfollowingTopicsList[index];
                   String value = _textEditingControllerList[index].text;
                   if (value != strButtonNavBar && value != '') {
                     // call submit form
@@ -175,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage>
 
   // build expansion panel list
   Widget _buildExpansionPanelList() {
-    List<String> navBarList = widget.model.getfollowingTopicsList;
+    List<String> navBarList = model.getfollowingTopicsList;
 
     // Generate ExpansionPanel List with navBarList length
     List<ExpansionPanel> _expansionPanelList =
@@ -252,7 +257,7 @@ class _SettingsPageState extends State<SettingsPage>
         builder: (BuildContext context) {
           return AddCategorieDialog(
             addLocalCategorie: submit,
-            model: widget.model,
+            model: model,
             scaffoldKey: _scaffoldKey,
           );
         });
@@ -260,7 +265,7 @@ class _SettingsPageState extends State<SettingsPage>
 
   // build remove dialog method to remove last categorie from lists
   void _buildRemoveDialog(int categorieIndex) {
-    String categorie = widget.model.getfollowingTopicsList[categorieIndex];
+    String categorie = model.getfollowingTopicsList[categorieIndex];
     // removeLocal function, called from dialog when remove categorie
     void removeLocal() {
       _formFieldfocusNodeList.removeAt(categorieIndex);
@@ -275,7 +280,7 @@ class _SettingsPageState extends State<SettingsPage>
           return RemoveDialog(
             index: categorieIndex,
             categorie: categorie,
-            model: widget.model,
+            model: model,
             scaffoldKey: _scaffoldKey,
             removeLocal: removeLocal,
           );
@@ -288,7 +293,7 @@ class _SettingsPageState extends State<SettingsPage>
     _formFieldfocusNodeList.clear();
     _textEditingControllerList.clear();
     _expandedList.clear();
-    int length = widget.model.getfollowingTopicsList.length;
+    int length = model.getfollowingTopicsList.length;
     // generate _formFieldfocusNodeList
     _formFieldfocusNodeList = List.generate(length, (index) {
       return FocusNode();
@@ -300,12 +305,11 @@ class _SettingsPageState extends State<SettingsPage>
       return false;
     });
     for (var i = 0; i < _textEditingControllerList.length; i++) {
-      _textEditingControllerList[i].text =
-          widget.model.getfollowingTopicsList[i];
+      _textEditingControllerList[i].text = model.getfollowingTopicsList[i];
     }
     // reset main model
-    await widget.model.restoreToDefaults();
-    await widget.model.initAppData();
+    await model.restoreToDefaults();
+    await model.initAppData();
     // setState the app
     widget.changeState();
     // pop from dialog
@@ -318,7 +322,7 @@ class _SettingsPageState extends State<SettingsPage>
     _unFocusScope();
     // Validate returns true if the form is valid, otherwise false.
     if (_formKey.currentState.validate()) {
-      widget.model.setButtonNavBar(index, value.trim());
+      model.setButtonNavBar(index, value.trim());
       _expandedList[index] = false;
       _showSnackBar();
     }
@@ -327,8 +331,7 @@ class _SettingsPageState extends State<SettingsPage>
   // show snack bar method
   void _showSnackBar() {
     // snackBar
-    Color textColor =
-        widget.model.isDark ? Theme.of(context).accentColor : null;
+    Color textColor = model.isDark ? Theme.of(context).accentColor : null;
     SnackBar snackBar = SnackBar(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
           ? Theme.of(context).primaryColor
@@ -369,14 +372,12 @@ class _SettingsPageState extends State<SettingsPage>
                 SettingsText('Search'),
                 _buildSettingsCard([
                   CountryText(),
-                  TimeSearchMenu(widget.model),
-                  DatePicker(widget.model, _scaffoldKey),
+                  TimeSearchMenu(model),
+                  DatePicker(model, _scaffoldKey),
                 ]),
                 SettingsText('Location'),
-                _buildSettingsCard([
-                  UpdatelocationWidget(),
-                  RemoveLocationWidget(widget.model)
-                ]),
+                _buildSettingsCard(
+                    [UpdatelocationWidget(), RemoveLocationWidget(model)]),
                 // Privacy card
                 SettingsText('Privacy'),
                 _buildSettingsCard([
@@ -396,9 +397,9 @@ class _SettingsPageState extends State<SettingsPage>
                 SettingsText('Customize'),
                 _buildSettingsCard([
                   // Accent Color Picker
-                  ColorPicker(widget.model, widget.changeState),
+                  ColorPicker(model, widget.changeState),
                   // Dark / Light mode button widget
-                  ThemeListTile(widget.changeState, widget.model),
+                  ThemeListTile(widget.changeState, model),
                 ]),
                 SettingsText('Info'),
                 // info card

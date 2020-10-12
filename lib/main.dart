@@ -62,7 +62,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    Router router = Router(changeState);
     return FutureBuilder<void>(
         future: loadThemeData,
         builder: (context, snapshot) {
@@ -70,6 +69,7 @@ class _MyAppState extends State<MyApp> {
             if (snapshot.hasError) {
               _handleSnapshotError(snapshot);
             }
+            var router = Router(changeState);
             return ScopedModel<MainModel>(
                 model: _model,
                 child: MaterialApp(

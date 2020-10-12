@@ -11,17 +11,13 @@ import 'package:MyNews/widgets/dialogs/welcome_dialog.dart';
 import 'package:MyNews/services/prefs_service.dart';
 
 class MainPage extends StatefulWidget {
-  final MainModel model;
-
-  MainPage(this.model);
-
   @override // create state
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   // Class Attributes
-
+  MainModel model;
   // scaffold global key
   GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   // tab controller
@@ -41,9 +37,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     // addPostFramecallback so the dialog show after the framework layouts the page
     WidgetsBinding.instance.addPostFrameCallback(_showOpenDialog);
     _bodyWidgetPages = [
-      HomePage(widget.model, setNavBarVisibility),
-      TopicsPage(widget.model, setNavBarVisibility),
-      SavedArticlesPage(widget.model, setNavBarVisibility),
+      HomePage(model, setNavBarVisibility),
+      TopicsPage(model, setNavBarVisibility),
+      SavedArticlesPage(model, setNavBarVisibility),
       //PlayGroundPage()
     ];
     _pageIndex = 0;
@@ -60,6 +56,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     // dispose controllers
     _tabController?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    model = MainModel.of(context);
+    super.didChangeDependencies();
   }
 
   // Animated bottomNavigationBar
@@ -112,7 +114,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   // change pageBody widget to the given indexs
   void _changePage(int index) {
-    MainModel model = widget.model;
     if (_pageIndex == 2) {
       model.callNotifyListeners();
     }
@@ -120,7 +121,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       _pageIndex = index;
     });
 
-    model.setPageIndex(index);
+    //model.setPageIndex(index);
     _pageController.jumpToPage(index);
   }
 

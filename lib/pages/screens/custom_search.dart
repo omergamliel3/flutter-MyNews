@@ -10,13 +10,11 @@ import 'package:MyNews/services/prefs_service.dart';
 class CustomSearch extends StatefulWidget {
   @override
   _CustomSearchState createState() => _CustomSearchState();
-
-  final MainModel model;
-  CustomSearch(this.model);
 }
 
 class _CustomSearchState extends State<CustomSearch>
     with TickerProviderStateMixin {
+  MainModel model;
   bool showRecent = true;
   TextEditingController _textController = TextEditingController();
   AnimationController _clearAnimController;
@@ -43,6 +41,12 @@ class _CustomSearchState extends State<CustomSearch>
   // UnFocusScope Method, creates a new FocusNode
   void _unFocusScope() {
     FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  @override
+  void didChangeDependencies() {
+    model = MainModel.of(context);
+    super.didChangeDependencies();
   }
 
   // build title textField widget method
@@ -82,11 +86,11 @@ class _CustomSearchState extends State<CustomSearch>
   // build suggestions widget method
   Widget _buildSuggestions() {
     // return empty container when private session is true
-    if (widget.model.privateSession) {
+    if (model.privateSession) {
       return Container();
     }
-    //print('showRecent: $showRecent\nRecent Search Title: ${widget.model.savedSearchNewsTitle}');
-    if (showRecent & widget.model.savedSearchNewsTitle.isNotEmpty) {
+    //print('showRecent: $showRecent\nRecent Search Title: ${model.savedSearchNewsTitle}');
+    if (showRecent & model.savedSearchNewsTitle.isNotEmpty) {
       showRecent = false;
       return _buildRecentSearch();
     } else
@@ -138,9 +142,9 @@ class _CustomSearchState extends State<CustomSearch>
   // build recent search widget method
   Widget _buildRecentSearch() {
     // does not show recent search when private session is on
-    if (widget.model.privateSession) return Container();
+    if (model.privateSession) return Container();
 
-    String text = widget.model.savedSearchNewsTitle;
+    String text = model.savedSearchNewsTitle;
     return Container(
       padding: EdgeInsets.all(2),
       child: ListTile(
@@ -196,7 +200,7 @@ class _CustomSearchState extends State<CustomSearch>
     // lowerCase all chars
     saveSearch = saveSearch.toLowerCase();
     // saveSuggestions in model if private Session False
-    if (!widget.model.privateSession) Prefs.saveSuggestions(saveSearch);
+    if (!model.privateSession) Prefs.saveSuggestions(saveSearch);
 
     Navigator.pushNamedAndRemoveUntil(
         context, '/search/${search.trim()}', ModalRoute.withName('/main'));

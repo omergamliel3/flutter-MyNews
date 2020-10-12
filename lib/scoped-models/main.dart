@@ -58,8 +58,6 @@ class MainModel extends Model {
 
   int _homePageTabBarIndex = 0; // home page tabBar index
 
-  int _pageIndex = 0; // navigation page index
-
   bool _isDark = false; // isDark bool to determine the theme mode
   int _selectedAccentColor; // selected accent color index
 
@@ -272,16 +270,6 @@ class MainModel extends Model {
 
   void setHomePageTabBarIndex(int index) {
     _homePageTabBarIndex = index;
-  }
-
-  /// _pageIndex getter
-  int get pageIndex {
-    return _pageIndex;
-  }
-
-  /// set pageIndex method
-  void setPageIndex(int index) {
-    _pageIndex = index;
   }
 
   /// searchCountry getter
