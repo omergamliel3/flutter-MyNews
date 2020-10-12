@@ -202,8 +202,8 @@ class _CustomSearchState extends State<CustomSearch>
     // saveSuggestions in model if private Session False
     if (!model.privateSession) Prefs.saveSuggestions(saveSearch);
 
-    Navigator.pushNamedAndRemoveUntil(
-        context, '/search/${search.trim()}', ModalRoute.withName('/main'));
+    Navigator.popAndPushNamed(context, '/search',
+        arguments: {'search': search.trim()});
   }
 
   @override

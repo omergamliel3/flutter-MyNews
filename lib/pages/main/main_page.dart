@@ -36,12 +36,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void initState() {
     // addPostFramecallback so the dialog show after the framework layouts the page
     WidgetsBinding.instance.addPostFrameCallback(_showOpenDialog);
-    _bodyWidgetPages = [
-      HomePage(model, setNavBarVisibility),
-      TopicsPage(model, setNavBarVisibility),
-      SavedArticlesPage(model, setNavBarVisibility),
-      //PlayGroundPage()
-    ];
+
     _pageIndex = 0;
     _pageController = PageController(
       initialPage: _pageIndex,
@@ -61,6 +56,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     model = MainModel.of(context);
+    _bodyWidgetPages = [
+      HomePage(model, setNavBarVisibility),
+      TopicsPage(model, setNavBarVisibility),
+      SavedArticlesPage(model, setNavBarVisibility),
+      //PlayGroundPage()
+    ];
     super.didChangeDependencies();
   }
 

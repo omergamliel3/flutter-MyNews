@@ -32,10 +32,9 @@ class Router {
         break;
       // search route
       case '/search':
-        String search;
-        search = settings.name.split('/')[2].toString();
+        var search = settings.arguments as Map<String, String>;
         return PageTransition(
-            child: SearchPage(search),
+            child: SearchPage(search['search']),
             type: PageTransitionType.fade,
             duration: Duration(milliseconds: 150));
         break;

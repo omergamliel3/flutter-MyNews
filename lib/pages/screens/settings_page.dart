@@ -43,10 +43,27 @@ class _SettingsPageState extends State<SettingsPage>
   // Called when this object is inserted into the tree.
   @override
   void initState() {
+    super.initState();
+  }
+
+  // Called when this object is removed from the tree permanently.
+  @override
+  void dispose() {
+    _formFieldfocusNodeList.forEach((element) {
+      element.dispose();
+    });
+    _textEditingControllerList.forEach((element) {
+      element.dispose();
+    });
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    model = MainModel.of(context);
     // revrieve date times from model
     _expandedList = [];
-
-    int navBarLength = model.getfollowingTopicsList.length;
+    var navBarLength = model.getfollowingTopicsList.length;
     // Generate FocusNode List with the given ButtonNavBarList length
     _formFieldfocusNodeList = List.generate(navBarLength, (index) {
       return FocusNode();
@@ -67,24 +84,6 @@ class _SettingsPageState extends State<SettingsPage>
         setState(() {});
       });
     });
-    super.initState();
-  }
-
-  // Called when this object is removed from the tree permanently.
-  @override
-  void dispose() {
-    _formFieldfocusNodeList.forEach((element) {
-      element.dispose();
-    });
-    _textEditingControllerList.forEach((element) {
-      element.dispose();
-    });
-    super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    model = MainModel.of(context);
     super.didChangeDependencies();
   }
 
