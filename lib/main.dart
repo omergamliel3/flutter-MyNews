@@ -1,4 +1,3 @@
-import 'package:MyNews/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 import 'package:flutter/foundation.dart' as foundation;
@@ -8,6 +7,7 @@ import 'package:device_preview/device_preview.dart';
 
 import 'package:MyNews/scoped-models/main.dart';
 
+import 'package:MyNews/routes/router.dart' as custom_router;
 import 'package:MyNews/shared/adaptive_theme.dart';
 import 'package:MyNews/shared/dark_theme.dart';
 import 'package:MyNews/shared/global_values.dart';
@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
             if (snapshot.hasError) {
               _handleSnapshotError(snapshot);
             }
-            var router = Router(changeState);
+            var router = custom_router.Router(changeState);
             return ScopedModel<MainModel>(
                 model: _model,
                 child: MaterialApp(
